@@ -4,6 +4,9 @@ import { Routes, Route } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import Home from './pages/Home'
 import { UserContext } from './context/UserContext'
+import Happening from './pages/Happening'
+import Appreciate from './pages/Appreciate'
+import Profile from './pages/Profile'
 
 const App = () => {
   const { id } = useContext(UserContext);
@@ -13,6 +16,9 @@ const App = () => {
       <ToastContainer/>
       <Routes>
         <Route path='/' element={id ? <Home/> : <Login/>} />
+        <Route path='/happenings' element = {<Happening/>}/>
+         <Route path='/appreciate' element = {<Appreciate/>}/>
+          <Route path='/profile' element = {<Profile/>}/>
       </Routes>
     </div>
   )
