@@ -79,7 +79,7 @@ const NavBar = () => {
       {/* Active Page Indicator (example) */}
       <div className='hidden sm:block px-6 pb-2'>
         <div className={`h-1 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 transition-all duration-300 ${
-          currentPage === "home" ? 'w-1/4' :
+          currentPage === "home" ? 'w-1/3' :
           currentPage === "happenings" ? 'w-2/4 ml-1/4' :
           currentPage === "appreciate" ? 'w-3/4 ml-1/4' :
           'w-full'
