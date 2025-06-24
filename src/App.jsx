@@ -7,6 +7,7 @@ import { UserContext } from './context/UserContext'
 import Happening from './pages/Happening'
 import Appreciate from './pages/Appreciate'
 import Profile from './pages/Profile'
+import RequestUser from './pages/RequestUser'
 
 const App = () => {
   const { id } = useContext(UserContext);
@@ -19,6 +20,7 @@ const App = () => {
         <Route path='/happenings' element = {<Happening/>}/>
          <Route path='/appreciate' element = {<Appreciate/>}/>
           <Route path='/profile' element = {<Profile/>}/>
+          <Route path = '/requestuser' element = {<RequestUser/>} />
       </Routes>
     </div>
   )

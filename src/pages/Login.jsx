@@ -22,6 +22,9 @@ const Login = () => {
       setId(password); // This will update context and trigger rerender in App.jsx
       navigate('/');
     }
+    else{
+      toast.error("Wrong credentials used");
+    }
   }
 
   return (
@@ -137,7 +140,7 @@ const Login = () => {
         
         <div className="text-center text-xs sm:text-sm text-gray-500 mt-4 sm:mt-6">
           Need access?{' '}
-          <a href="#" className="text-blue-600 hover:text-blue-700 font-medium hover:underline">
+          <a href="/requestuser" className="text-blue-600 hover:text-blue-700 font-medium hover:underline">
             Contact HR
           </a>
         </div>
