@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-const RequestUser = () => {
+const Requestuser = () => {
   const [form, setForm] = useState({
     name: '',
     sapId: '',
@@ -129,4 +129,4 @@ const navigate = useNavigate();
   )
 }
 
-export default RequestUser
+export default Requestuser;
