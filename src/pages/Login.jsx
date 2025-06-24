@@ -20,7 +20,7 @@ const Login = () => {
     if (sapId === credentials.sapId && password === credentials.password) {
       toast.success("Logged in successfully");
       setId(password); // This will update context and trigger rerender in App.jsx
-      navigate('/');
+      navigate('/happenings');
     }
     else{
       toast.error("Wrong credentials used");
