@@ -14,7 +14,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!sapId || !password) {
-      setError('Please enter both SAP ID and password.')
+      setError('Please enter both SAP ID and password.');
       return
     }
     if (sapId === credentials.sapId && password === credentials.password) {

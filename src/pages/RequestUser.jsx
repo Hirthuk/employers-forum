@@ -21,6 +21,7 @@ const navigate = useNavigate();
 
     const SERVICEID = "service_07bfra2"
     e.preventDefault();
+    console.log(form);
     setForm({
       name: '',
       sapId: '',
