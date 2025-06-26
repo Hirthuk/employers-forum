@@ -21,6 +21,7 @@ const Login = () => {
     if (sapId === credentials.sapId && password === credentials.password) {
       toast.success("Logged in successfully");
       setId(password);
+      localStorage.setItem('id', password);
       navigate('/happenings');
     }
     else{

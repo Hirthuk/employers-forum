@@ -11,8 +11,8 @@ import Requestuser from './pages/RequestUser'
 import HomeLogin from './pages/HomeLogin'
 
 const App = () => {
-  const { id } = useContext(UserContext);
-
+  const { id } = useContext(UserContext) ||localStorage.getItem('id');
+  
   return (
     <div className="px-2 py-2">
       <ToastContainer/>

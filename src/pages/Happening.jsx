@@ -1,8 +1,8 @@
-import React from 'react'
-import NavBar from '../components/NavBar'
-import SinglePost from '../components/SinglePost'
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import NavBar from '../components/NavBar';
+import SinglePost from '../components/SinglePost';
 import { assets } from '../assets';
+
 const dummyPosts = [
   {
     SapId: "52006991",
@@ -68,69 +68,71 @@ const dummyPosts = [
 
 const Happening = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [filteredPosts, setFilteredPosts] = useState(dummyPosts);
+  const [activeFilter, setActiveFilter] = useState('all');
   const [showSearch, setShowSearch] = useState(true);
 
+  const [filteredPosts, setFilteredPosts] = useState(dummyPosts);
+
+  // Always filter from dummyPosts
+  useEffect(() => {
+    let posts = [...dummyPosts];
+    if (activeFilter === 'recent') {
+      posts = posts.reverse();
+    }
+    if (searchTerm.trim() !== '') {
+      const term = searchTerm.toLowerCase();
+      posts = posts.filter(post =>
+        post.Name.toLowerCase().includes(term) ||
+        post.SapId.toString().includes(term) ||
+        post.message.toLowerCase().includes(term)
+      );
+    }
+    setFilteredPosts(posts);
+  }, [searchTerm, activeFilter]);
+
   const handleSearch = (e) => {
-    const term = e.target.value.toLowerCase();
-    setSearchTerm(term);
-    
-    const filtered = dummyPosts.filter(post => 
-      post.Name.toLowerCase().includes(term) || 
-      post.SapId.includes(term) ||
-      post.message.toLowerCase().includes(term)
-    );
-    setFilteredPosts(filtered);
+    setSearchTerm(e.target.value);
   };
 
   const clearSearch = () => {
     setSearchTerm('');
-    setFilteredPosts(dummyPosts);
+    setActiveFilter('all');
   };
 
   const handleFilter = (type) => {
-    if (type === 'recent') {
-      setFilteredPosts([...dummyPosts].reverse());
-    } else {
-      setFilteredPosts(dummyPosts);
-    }
+    setActiveFilter(type);
   };
 
   return (
-    <div className='min-h-screen'>
+    <div className='min-h-screen bg-gradient-to-br from-blue-50 to-cyan-50'>
       <NavBar />
       
-      <div className='max-w-4xl mx-auto px-4 py-8'>
+      <div className='max-w-7xl mx-auto px-4 sm:px-6 py-8'>
         {/* Search and Filter Section */}
-        {showSearch && (
-          <div className='flex flex-col md:flex-row gap-4 mb-8 sticky top-0 z-10 pt-4 pb-4'>
+        <div className={`${showSearch ? 'block' : 'hidden'} transition-all duration-300`}>
+          <div className='flex flex-col md:flex-row gap-4 mb-8 sticky top-16 z-10 pt-4 pb-4 bg-transparent backdrop-blur-sm rounded-xl'>
             <div className='relative flex-grow'>
+              <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
+                <img 
+                  src={assets.searchIcon} 
+                  alt="Search" 
+                  className='h-5 w-5 text-blue-500'
+                />
+              </div>
               <input
                 type='text'
-                placeholder='Search by name or SapId'
-                className='w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500'
+                placeholder='Search by name, SapID or message...'
+                className='w-full px-4 py-3 pl-10 border border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent shadow-sm transition-all bg-white/80'
                 value={searchTerm}
                 onChange={handleSearch}
               />
-              
-              {/* Search Icon - Always visible */}
-              <img 
-                src={assets.searchIcon} 
-                alt="Search" 
-                className='absolute left-3 top-2.5 h-5 w-5 text-gray-400'
-              />
-              
-              {/* Clear (X) Icon - Only visible when there's text */}
               {searchTerm && (
                 <button 
                   onClick={clearSearch}
-                  className='absolute right-3 top-2.5 h-5 w-5 text-gray-400 hover:text-gray-600 focus:outline-none'
+                  className='absolute right-3 top-3 h-5 w-5 text-blue-500 hover:text-blue-700 focus:outline-none transition-colors'
                   aria-label='Clear search'
                 >
-                  <img 
-                    src={assets.closeIcon} 
-                    alt="Clear search" 
-                  />
+                  <img src={assets.closeIcon} alt="Clear search" />
                 </button>
               )}
             </div>
@@ -138,37 +140,45 @@ const Happening = () => {
             <div className='flex gap-2'>
               <button 
                 onClick={() => handleFilter('recent')}
-                className='px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors'
+                className={`px-4 py-2 rounded-xl transition-all ${
+                  activeFilter === 'recent' 
+                    ? 'bg-blue-600 text-white shadow-md' 
+                    : 'bg-white/80 border border-blue-200 hover:bg-blue-50 text-blue-600'
+                }`}
               >
                 Most Recent
               </button>
               <button 
                 onClick={() => handleFilter('all')}
-                className='px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors'
+                className={`px-4 py-2 rounded-xl transition-all ${
+                  activeFilter === 'all' 
+                    ? 'bg-blue-600 text-white shadow-md' 
+                    : 'bg-white/80 border border-blue-200 hover:bg-blue-50 text-blue-600'
+                }`}
               >
                 All Posts
               </button>
             </div>
           </div>
-        )}
+        </div>
 
-        {/* Toggle search visibility button - shown when search is hidden */}
-        {!showSearch && (
-          <button 
-            onClick={() => setShowSearch(true)}
-            className='mb-4 p-2 bg-white rounded-full shadow-sm hover:bg-gray-100 transition-colors'
-            aria-label='Show search'
-          >
-            <img 
-              src={assets.searchIcon} 
-              alt="Show search" 
-              className='h-5 w-5 text-gray-400'
-            />
-          </button>
-        )}
+        {/* Floating search toggle button */}
+        <button 
+          onClick={() => setShowSearch(!showSearch)}
+          className={`fixed md:hidden bottom-6 right-6 p-3 bg-blue-600 rounded-full shadow-lg hover:bg-blue-700 transition-all ${
+            showSearch ? 'rotate-45' : ''
+          }`}
+          aria-label={showSearch ? 'Hide search' : 'Show search'}
+        >
+          <img 
+            src={showSearch ? assets.closeIcon : assets.searchIcon} 
+            alt="Toggle search" 
+            className='h-6 w-6 text-white'
+          />
+        </button>
 
         {/* Posts Grid */}
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
           {filteredPosts.map((post, idx) => (
             <SinglePost
               key={idx}
@@ -182,14 +192,22 @@ const Happening = () => {
 
         {/* Empty State */}
         {filteredPosts.length === 0 && (
-          <div className='text-center py-12'>
-            <img 
-              src={assets.emptyStateIcon} 
-              alt="No posts found" 
-              className='mx-auto h-24 w-24 text-gray-400 mb-4'
-            />
-            <h3 className='text-lg font-medium text-gray-900'>No posts found</h3>
-            <p className='text-gray-500 mt-1'>Try adjusting your search or filter</p>
+          <div className='text-center py-16'>
+            <div className='mx-auto bg-white p-8 rounded-2xl shadow-md max-w-md border border-blue-100'>
+              <img 
+                src={assets.emptyStateIcon} 
+                alt="No posts found" 
+                className='mx-auto h-20 w-20 text-blue-400 mb-4'
+              />
+              <h3 className='text-xl font-medium text-gray-800 mb-2'>No posts found</h3>
+              <p className='text-gray-500 mb-6'>Try adjusting your search or filter</p>
+              <button 
+                onClick={clearSearch}
+                className='px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm'
+              >
+                Clear search
+              </button>
+            </div>
           </div>
         )}
       </div>
@@ -198,4 +216,3 @@ const Happening = () => {
 };
 
 export default Happening;
-
