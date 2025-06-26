@@ -9,6 +9,8 @@ import teamcollaboration from './teamcollaboration.jpg'
 import secureenvironment from './secureenvironment.webp'
 import dashboard from './dashboard.jpg'
 import highfive from './highfive.webp'
+import loginbg from './Login_Page_bg.jpg'
+import requestbg from './request_bg.jpg'
 export const assets = {
 likeIcon,
 searchIcon,
@@ -20,7 +22,9 @@ webbackgroundimage,
 teamcollaboration,
 secureenvironment,
 dashboard,
-highfive
+highfive,
+loginbg,
+requestbg
 }
 
 

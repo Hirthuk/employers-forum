@@ -8,35 +8,33 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: { 
-      staggerChildren: 0.1, 
+      staggerChildren: 0.05, 
       when: "beforeChildren",
-      duration: 0.8
+      duration: 0.5
     }
   }
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 40 },
+  hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
     transition: { 
-      duration: 0.8, 
-      ease: [0.6, -0.05, 0.01, 0.99],
-      type: "spring",
-      stiffness: 100
+      duration: 0.6, 
+      ease: "easeOut"
     }
   }
 };
 
 const featureVariants = {
-  hidden: { opacity: 0, x: -30 },
+  hidden: { opacity: 0, x: -20 },
   visible: (i) => ({
     opacity: 1,
     x: 0,
     transition: { 
-      delay: i * 0.15, 
-      duration: 0.6,
+      delay: i * 0.1, 
+      duration: 0.4,
       ease: "backOut"
     }
   })
@@ -51,28 +49,28 @@ const HomeLogin = () => {
       image: assets.teamcollaboration,
       alt: "Team collaborating on project",
       title: "Real-time Feedback",
-      description: "Share and receive feedback instantly with your team",
+      description: "Instant team feedback sharing",
       color: "from-cyan-400 to-blue-500"
     },
     {
       image: assets.secureenvironment,
       alt: "Secure data protection illustration",
       title: "Secure Environment",
-      description: "Private and encrypted communication for your organization",
+      description: "Encrypted communication",
       color: "from-purple-400 to-indigo-500"
     },
     {
       image: assets.dashboard,
       alt: "Data analytics dashboard",
       title: "Actionable Insights",
-      description: "Turn feedback into measurable improvements",
+      description: "Data-driven improvements",
       color: "from-emerald-400 to-teal-500"
     },
     {
       image: assets.highfive,
       alt: "Team members giving high fives",
       title: "Peer Recognition",
-      description: "Celebrate wins and acknowledge great work",
+      description: "Celebrate team wins",
       color: "from-amber-400 to-orange-500"
     }
   ];
@@ -80,119 +78,91 @@ const HomeLogin = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentFeature((prev) => (prev + 1) % features.length);
-    }, 5000);
+    }, 3000); // Reduced from 5000ms to 3000ms for faster transitions
     return () => clearInterval(interval);
   }, []);
 
   return (
     <div className="relative min-h-screen overflow-hidden">
-      {/* Animated Background */}
+      {/* Vibrant Background */}
       <div className="absolute inset-0 z-0">
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed transition-all duration-1000"
-          style={{ 
-            backgroundImage: `url(${assets.webbackgroundimage})`,
-            opacity: 0.8
-          }}
+        <img
+          src={assets.webbackgroundimage}
+          alt="Background"
+          className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-900/90 via-gray-900/70 to-gray-900/90" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-black/70" />
       </div>
-
-      {/* Floating Particles */}
-      {[...Array(15)].map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute rounded-full bg-white/10 backdrop-blur-sm"
-          initial={{
-            x: Math.random() * window.innerWidth,
-            y: Math.random() * window.innerHeight,
-            width: Math.random() * 10 + 5,
-            height: Math.random() * 10 + 5
-          }}
-          animate={{
-            x: Math.random() * window.innerWidth,
-            y: Math.random() * window.innerHeight,
-            transition: {
-              duration: Math.random() * 20 + 10,
-              repeat: Infinity,
-              repeatType: "reverse",
-              ease: "linear"
-            }
-          }}
-        />
-      ))}
 
       {/* Main Content */}
       <motion.main
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="relative z-10 flex flex-col items-center justify-center px-4 py-16 lg:py-24 min-h-screen"
+        className="relative z-10 flex flex-col items-center justify-center px-4 py-12 lg:py-24 min-h-screen"
       >
-        <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
           {/* Left Section - Feature Highlights */}
           <motion.div 
-            className="space-y-8 text-white text-center lg:text-left"
+            className="space-y-6 lg:space-y-8 text-white text-center lg:text-left"
             variants={itemVariants}
           >
             <motion.h1
-              className="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight"
-              initial={{ opacity: 0, y: 40 }}
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight"
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
+              transition={{ delay: 0.2 }}
             >
-              <span className="block">Welcome to</span>
-              <span className={`bg-clip-text text-transparent bg-gradient-to-r ${features[currentFeature].color} inline-block mt-2`}>
+              <span className="hidden lg:block">Welcome to</span>
+              <span className={`bg-clip-text text-transparent bg-gradient-to-r ${features[currentFeature].color} inline-block mt-0 lg:mt-2`}>
                 Insight Hub
               </span>
             </motion.h1>
 
             <motion.p 
-              className="text-lg md:text-xl text-gray-300 max-w-lg"
+              className="text-base md:text-lg text-gray-200 max-w-md mx-auto lg:mx-0"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
+              transition={{ delay: 0.3 }}
             >
-              Empower your team with better feedback, recognition, and data-driven insights.
+              Better feedback. Better teams.
             </motion.p>
 
             <motion.div 
-              className="relative h-64 md:h-80 rounded-2xl overflow-hidden"
+              className="relative h-56 md:h-64 lg:h-72 rounded-xl lg:rounded-2xl overflow-hidden"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7 }}
+              transition={{ delay: 0.4 }}
             >
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentFeature}
-                  initial={{ opacity: 0, x: -40 }}
+                  initial={{ opacity: 0, x: -30 }}
                   animate={{ 
                     opacity: 1, 
                     x: 0,
-                    boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)"
+                    boxShadow: "0 15px 30px -5px rgba(0, 0, 0, 0.3)"
                   }}
-                  exit={{ opacity: 0, x: 40 }}
+                  exit={{ opacity: 0, x: 30 }}
                   transition={{ 
-                    duration: 0.8,
-                    ease: [0.6, -0.05, 0.01, 0.99]
+                    duration: 0.6, // Faster transition
+                    ease: "easeInOut"
                   }}
-                  className="absolute inset-0 flex flex-col items-center lg:items-start justify-center"
+                  className="absolute inset-0"
                 >
-                  <div className="relative w-full h-full">
-                    <img
-                      src={features[currentFeature].image}
-                      alt={features[currentFeature].alt}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className={`absolute inset-0 bg-gradient-to-t from-gray-900/70 via-transparent to-transparent ${features[currentFeature].color.replace('from-', 'via-').replace('to-', 'to-')}/50`} />
-                    <div className="absolute bottom-0 left-0 right-0 p-6 text-left">
-                      <h3 className="text-2xl font-bold text-white drop-shadow-lg">
-                        {features[currentFeature].title}
-                      </h3>
-                      <p className="text-gray-200 mt-2 max-w-md">
-                        {features[currentFeature].description}
-                      </p>
-                    </div>
+                  <img
+                    src={features[currentFeature].image}
+                    alt={features[currentFeature].alt}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 p-4 lg:p-6 text-left">
+                    <h3 className="text-xl lg:text-2xl font-bold text-white">
+                      {features[currentFeature].title}
+                    </h3>
+                    <p className="text-gray-200 text-sm lg:text-base">
+                      {features[currentFeature].description}
+                    </p>
                   </div>
                 </motion.div>
               </AnimatePresence>
@@ -200,7 +170,7 @@ const HomeLogin = () => {
 
             {/* Feature Indicators */}
             <motion.ul 
-              className="flex justify-center lg:justify-start gap-3 mt-6"
+              className="flex justify-center lg:justify-start gap-3 mt-4 lg:mt-6"
               variants={containerVariants}
             >
               {features.map((feature, i) => (
@@ -208,13 +178,13 @@ const HomeLogin = () => {
                   key={i}
                   variants={featureVariants}
                   custom={i}
-                  className={`relative cursor-pointer transition-all duration-300 ${
+                  className={`relative cursor-pointer transition-all duration-200 ${
                     currentFeature === i ? "scale-110" : "opacity-70 hover:opacity-100"
                   }`}
                   onClick={() => setCurrentFeature(i)}
-                  whileHover={{ y: -5 }}
+                  whileHover={{ y: -3 }}
                 >
-                  <div className="w-16 h-16 rounded-xl overflow-hidden border-2 border-white/30 hover:border-white/50 transition-all">
+                  <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-lg overflow-hidden border-2 border-white/30 hover:border-white/50 transition-all">
                     <img
                       src={feature.image}
                       alt={feature.alt}
@@ -223,7 +193,7 @@ const HomeLogin = () => {
                   </div>
                   {currentFeature === i && (
                     <motion.div 
-                      className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-8 h-1 rounded-full bg-white"
+                      className="absolute -bottom-1.5 left-1/2 transform -translate-x-1/2 w-6 h-0.5 rounded-full bg-white"
                       layoutId="featureIndicator"
                       transition={{ type: "spring", stiffness: 300, damping: 30 }}
                     />
@@ -235,39 +205,35 @@ const HomeLogin = () => {
 
           {/* Right Section - Login Card */}
           <motion.div 
-            className="flex flex-col items-center space-y-6"
+            className="flex flex-col items-center space-y-6 w-full"
             variants={itemVariants}
-            transition={{ delay: 0.9 }}
+            transition={{ delay: 0.5 }}
           >
             <motion.div 
-              className="w-full max-w-md bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 shadow-2xl overflow-hidden"
-              initial={{ opacity: 0, y: 40 }}
+              className="w-full max-w-sm lg:max-w-md bg-white/10 backdrop-blur-lg rounded-xl lg:rounded-2xl p-6 lg:p-8 border border-white/20 shadow-xl overflow-hidden"
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              whileHover={{ scale: 1.02 }}
+              whileHover={{ scale: 1.01 }}
               transition={{ type: "spring", stiffness: 200 }}
             >
-              <div className="absolute -top-32 -right-32 w-64 h-64 rounded-full bg-blue-500/20 filter blur-3xl" />
-              <div className="absolute -bottom-32 -left-32 w-64 h-64 rounded-full bg-indigo-500/20 filter blur-3xl" />
-              
               <div className="relative z-10">
-                <h2 className="text-3xl font-bold text-white mb-2">Get Started</h2>
-                <p className="text-gray-300 mb-8">Join thousands of teams improving their feedback culture</p>
-
-                <div className="space-y-6">
+                <h2 className="text-2xl lg:text-3xl font-bold text-white mb-6">Get Started</h2>
+                
+                <div className="space-y-5">
                   <NavLink to="/login">
                     <motion.button
-                      className={`w-full bg-gradient-to-r ${features[currentFeature].color} text-white font-bold py-4 px-6 rounded-xl shadow-lg transition-all text-lg flex items-center justify-center gap-2`}
+                      className={`w-full bg-gradient-to-r ${features[currentFeature].color} text-white font-bold py-3 lg:py-4 px-6 rounded-lg lg:rounded-xl shadow-lg transition-all flex items-center justify-center gap-2`}
                       whileHover={{ 
-                        scale: 1.03,
-                        boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.4)"
+                        scale: 1.02,
+                        boxShadow: "0 8px 20px -5px rgba(0, 0, 0, 0.3)"
                       }}
                       whileTap={{ scale: 0.98 }}
                       onHoverStart={() => setIsHovered(true)}
                       onHoverEnd={() => setIsHovered(false)}
                     >
-                      <span>Login to Insight Hub</span>
+                      <span>Login</span>
                       <motion.span
-                        animate={{ x: isHovered ? 5 : 0 }}
+                        animate={{ x: isHovered ? 4 : 0 }}
                         transition={{ type: "spring", stiffness: 500 }}
                       >
                         →
@@ -275,64 +241,30 @@ const HomeLogin = () => {
                     </motion.button>
                   </NavLink>
 
-                  <div className="relative">
+                  <div className="relative my-4">
                     <div className="absolute inset-0 flex items-center">
                       <div className="w-full border-t border-white/20"></div>
                     </div>
                     <div className="relative flex justify-center">
-                      <span className="px-4 bg-transparent text-white/70 text-sm">
+                      <span className="px-3 bg-transparent text-white/70 text-sm">
                         or
                       </span>
                     </div>
                   </div>
 
-                  <NavLink to="/request-access">
+                  <NavLink to="/requestuser">
                     <motion.button
-                      className="w-full bg-white/90 hover:bg-white text-gray-900 font-semibold py-4 px-6 rounded-xl border border-white transition-all text-lg flex items-center justify-center gap-2"
+                      className="w-full bg-white/90 hover:bg-white text-gray-900 font-semibold py-3 lg:py-4 px-6 rounded-lg lg:rounded-xl border border-white transition-all flex items-center justify-center"
                       whileHover={{ 
-                        scale: 1.03,
-                        boxShadow: "0 10px 25px -5px rgba(255, 255, 255, 0.2)"
+                        scale: 1.02,
+                        boxShadow: "0 8px 20px -5px rgba(255, 255, 255, 0.2)"
                       }}
                       whileTap={{ scale: 0.98 }}
                     >
                       <span>Request Access</span>
                     </motion.button>
                   </NavLink>
-
-                  <div className="flex flex-col sm:flex-row gap-4 mt-6">
-                    <motion.button
-                      className="flex-1 bg-gray-800/50 hover:bg-gray-800/70 text-white py-3 px-4 rounded-lg border border-gray-700 transition-all text-sm flex items-center justify-center gap-2"
-                      whileHover={{ y: -2 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <img className="h-5 w-5" src={assets.googleIcon} alt="Google" />
-                      <span>Google</span>
-                    </motion.button>
-
-                    <motion.button
-                      className="flex-1 bg-gray-800/50 hover:bg-gray-800/70 text-white py-3 px-4 rounded-lg border border-gray-700 transition-all text-sm flex items-center justify-center gap-2"
-                      whileHover={{ y: -2 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <img className="h-5 w-5" src={assets.microsoftIcon} alt="Microsoft" />
-                      <span>Microsoft</span>
-                    </motion.button>
-                  </div>
                 </div>
-              </div>
-            </motion.div>
-
-            <motion.div 
-              className="text-center text-white/70 text-sm"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.2 }}
-            >
-              <p>Trusted by teams at leading companies worldwide</p>
-              <div className="flex justify-center gap-6 mt-4 opacity-80">
-                <img src={assets.companyLogo1} alt="Company 1" className="h-8" />
-                <img src={assets.companyLogo2} alt="Company 2" className="h-8" />
-                <img src={assets.companyLogo3} alt="Company 3" className="h-8" />
               </div>
             </motion.div>
           </motion.div>
