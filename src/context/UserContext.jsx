@@ -18,7 +18,7 @@ export const UserProvider = ({ children }) => {
     { id: "happenings", name: "View Happenings" },
     { id: "appreciate", name: "Appreciate" },
     { id: "profile", name: "Profile" },
-      { id: "/", name: "Insight Hub" }
+      { id: "/", name: "About" }
   ];
 
   const value = {
