@@ -6,6 +6,7 @@ import { assets } from '../assets';
 const Requestuser = () => {
   const [form, setForm] = useState({
     name: '',
+    email: '', // Added email field
     sapId: '',
     designation: '',
     project: '',
@@ -22,28 +23,34 @@ const Requestuser = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    // Password validation
+
     if (form.password !== form.confirmPassword) {
       toast.error("Passwords don't match");
       return;
     }
-    
+
     if (form.password.length < 8) {
       toast.error("Password must be at least 8 characters");
+      return;
+    }
+
+    // Basic email validation
+    if (!form.email || !/\S+@\S+\.\S+/.test(form.email)) {
+      toast.error("Please enter a valid email address");
       return;
     }
 
     console.log(form);
     setForm({
       name: '',
+      email: '',
       sapId: '',
       designation: '',
       project: '',
       password: '',
       confirmPassword: ''
     });
-    
+
     toast.success("Request submitted successfully");
     navigate('/');
   };
@@ -91,6 +98,22 @@ const Requestuser = () => {
                 onChange={handleChange}
                 className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all bg-gray-50"
                 placeholder="Enter your full name"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="email">
+                Email
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                value={form.email}
+                onChange={handleChange}
+                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all bg-gray-50"
+                placeholder="Enter your email address"
                 required
               />
             </div>
