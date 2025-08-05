@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const SinglePost = ({ SapId, Name, message, fromSapId }) => {
+const Card = ({ SapId, Name, message, fromSapId }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   
@@ -85,4 +85,4 @@ const SinglePost = ({ SapId, Name, message, fromSapId }) => {
   );
 };
 
-export default SinglePost;
+export default Card;

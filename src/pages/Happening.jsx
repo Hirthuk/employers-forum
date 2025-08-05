@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import NavBar from '../components/NavBar';
-import SinglePost from '../components/SinglePost';
+import Card from '../components/Card';
 import { assets } from '../assets';
 
 const dummyPosts = [
@@ -180,7 +180,7 @@ const Happening = () => {
         {/* Posts Grid */}
         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
           {filteredPosts.map((post, idx) => (
-            <SinglePost
+            <Card
               key={idx}
               SapId={post.SapId}
               Name={post.Name}
