@@ -63,6 +63,12 @@ const dummyPosts = [
     Name: "Ravi",
     message: "Appreciate your dedication and hard work.",
     fromSapId: "52006991"
+  },
+  {
+    SapId: "52007001",
+    Name: "Gayathri",
+    message: "Your code reviews are always insightful.",
+    fromSapId: "52006991"
   }
 ];
 
