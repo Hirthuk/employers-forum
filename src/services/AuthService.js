@@ -38,7 +38,7 @@ class AuthService {
 
     } catch (error) {
         console.error("Wrong crendentials")
-        return error.message;
+        return error;
     }
   }
 

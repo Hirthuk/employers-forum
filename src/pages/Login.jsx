@@ -26,9 +26,14 @@ const Login = () => {
     
     try {
       console.log('Submitting login form...');
-      await login(sapId, password);
-      toast.success("Logged in successfully");
-      navigate('/happenings');
+      const response = await login(sapId, password);
+      if(response.token){
+        toast.success("Logged in successfully");
+        navigate('/happenings');
+      }
+      else{
+        toast.error("Login failed. Please check your credentials.");
+      }
     } catch (error) {
       console.error('Login error:', error.message);
       setError(error.message || 'Login failed. Please check your credentials.');

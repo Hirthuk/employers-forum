@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import AuthService from '../services/AuthService';
-
+import ProfileService from '../services/ProfileService';
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
@@ -10,6 +10,7 @@ export const UserProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState("home");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [userProfile, setUserProfile] = useState(null);
   const navigator = useNavigate();
   
   const pages = [
@@ -48,6 +49,7 @@ export const UserProvider = ({ children }) => {
   const login = async (sapid, password) => {
     console.log('Login function called with SAP ID:', sapid);
     const response = await AuthService.login(sapid, password);
+    // console.log(response);
     setUser({
       sapId: response.sapid || sapid,
       role: response.role,
@@ -77,7 +79,10 @@ export const UserProvider = ({ children }) => {
     isMobileMenuOpen,
     setIsMobileMenuOpen,
     pages,
-    navigator
+    navigator,
+    ProfileService,
+    userProfile,
+    setUserProfile
   }
 
   return (
