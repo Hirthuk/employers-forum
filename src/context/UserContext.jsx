@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
-import authService from '../services/authService';
+import AuthService from '../services/AuthService';
 
 export const UserContext = createContext();
 
@@ -23,18 +23,18 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     const checkAuth = () => {
       console.log('Checking authentication status...');
-      const authenticated = authService.isAuthenticated();
+      const authenticated = AuthService.isAuthenticated();
       setIsAuthenticated(authenticated);
       
       if (authenticated) {
         setUser({
-          sapId: authService.getUserSapId(),
-          role: authService.getUserRole(),
-          token: authService.getToken()
+          sapId: AuthService.getSapId(),
+          role: AuthService.getUserRole(),
+          token: AuthService.getToken()
         });
         console.log('User authenticated:', {
-          sapId: authService.getUserSapId(),
-          role: authService.getUserRole()
+          sapId: AuthService.getSapId(),
+          role: AuthService.getUserRole()
         });
       }
       
@@ -47,7 +47,7 @@ export const UserProvider = ({ children }) => {
   // Login function
   const login = async (sapid, password) => {
     console.log('Login function called with SAP ID:', sapid);
-    const response = await authService.login(sapid, password);
+    const response = await AuthService.login(sapid, password);
     setUser({
       sapId: response.sapid || sapid,
       role: response.role,
@@ -60,7 +60,7 @@ export const UserProvider = ({ children }) => {
   // Logout function
   const logout = async () => {
     console.log('Logout function called');
-    await authService.logout();
+    await AuthService.logout();
     setUser(null);
     setIsAuthenticated(false);
     navigator('/login');

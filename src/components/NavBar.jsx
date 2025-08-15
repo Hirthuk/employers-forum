@@ -9,12 +9,11 @@ const NavBar = () => {
     setIsMobileMenuOpen,
     pages,
     navigator,
-    setId
+    logout,
   } = useContext(UserContext);
 
-  const handleLogout = () => {
-    setId('');
-    localStorage.removeItem('id');
+  const handleLogout = async () => {
+    await logout();
     navigator('/login');
   };
 
