@@ -1,16 +1,19 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import NavBar from '../components/NavBar';
 import { UserContext } from '../context/UserContext';
 
 const Profile = () => {
-  const { ProfileService, userProfile, setUserProfile } = useContext(UserContext);
+  const { ProfileService, userProfile, setUserProfile, token, AdminCheck, isAdmin } = useContext(UserContext);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const profile = await ProfileService.getProfileDetails();
         setUserProfile(profile.data);
+        AdminCheck(token);
       } catch (err) {
         console.error("Error fetching profile:", err);
       } finally {
@@ -72,6 +75,23 @@ const Profile = () => {
               </span>
             </div>
           </div>
+
+          {/* Admin Page button (responsive) - visible only for admins */}
+          {isAdmin ? 
+            <div className="w-full sm:w-auto mt-4 sm:mt-0 sm:ml-4 flex justify-center sm:justify-end">
+              <button
+                type="button"
+                onClick={() => navigate('/admin')}
+                aria-label="Go to Admin Page"
+                className="inline-flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-gray-900 font-semibold rounded-full shadow-md hover:shadow-lg transition-transform transform hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-yellow-300"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 11c0-1.657 1.343-3 3-3s3 1.343 3 3v3h-6v-3zM6 7h.01M6 11h.01M6 15h.01M3 21h18" />
+                </svg>
+                <span className="text-sm sm:text-base">Admin Page</span>
+              </button>
+            </div> : ""
+          }
         </div>
 
         {/* Stats Grid */}

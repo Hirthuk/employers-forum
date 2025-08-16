@@ -12,6 +12,8 @@ export const UserProvider = ({ children }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
   const navigator = useNavigate();
+  const[token, setToken] = useState(null);
+  const [isAdmin, setAdmin] = useState(false);
   
   const pages = [
     { id: "happenings", name: "View Happenings" },
@@ -40,11 +42,11 @@ export const UserProvider = ({ children }) => {
       }
       
       setLoading(false);
+      setToken(AuthService.getToken());
     };
 
     checkAuth();
-  }, []);
-
+  }, [])
   // Login function
   const login = async (sapid, password) => {
     console.log('Login function called with SAP ID:', sapid);
@@ -58,6 +60,16 @@ export const UserProvider = ({ children }) => {
     setIsAuthenticated(true);
     return response;
   };
+  // Check whether the user is admin with token
+const AdminCheck = async (token) => {
+  const isAdmin = await AuthService.isAdmin(token);
+  if(isAdmin){
+    setAdmin(true);
+  }
+  else{
+    setAdmin(false);
+  }
+}
 
   // Logout function
   const logout = async () => {
@@ -82,7 +94,8 @@ export const UserProvider = ({ children }) => {
     navigator,
     ProfileService,
     userProfile,
-    setUserProfile
+    setUserProfile,
+    AdminCheck
   }
 
   return (

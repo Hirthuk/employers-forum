@@ -9,7 +9,8 @@ export const API_CONFIG = {
       MAIL : "api/email",
       LOGIN: "api/auth/login",
       LOGOUT: "api/auth/logout",
-      EMAIL: "api/email"
+      EMAIL: "api/email",
+      ISADMIN:"api/auth/isAdmin"
     }
 }
 

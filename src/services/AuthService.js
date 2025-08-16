@@ -65,8 +65,13 @@ class AuthService {
     return userRole === role; 
   }
 
-  isAdmin(){
-    return this.hasRole('ADMIN');
+  async  isAdmin(){
+    const response = await axiosApiClient.post(API_CONFIG.EndPoints.ISADMIN, {
+      token: this.getToken()
+    })
+    console.log(response.data);
+
+    return response.data;
   }
 
   isUser(){
