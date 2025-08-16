@@ -1,25 +1,28 @@
 import React, { useContext, useEffect  } from 'react'
 import Login from './pages/Login'
-import { Routes, Route, useNavigate } from 'react-router-dom'
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import Home from './pages/Home'
 import { UserContext } from './context/UserContext'
 import Happening from './pages/Happening'
 import Appreciate from './pages/Appreciate'
 import Profile from './pages/Profile'
-import Requestuser from './pages/RequestUser'
+import Requestuser from './pages/Requestuser'
 import HomeLogin from './pages/HomeLogin'
 import HrPage from './pages/HrPage'
 
 const App = () => {
-  const { user } = useContext(UserContext) ||localStorage.getItem('sapid');
+  const { user } = useContext(UserContext);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    if(!user){
+    // allow these public paths without authentication
+    const publicPaths = ['/login', '/requestuser', '/about'];
+    if (!user && !publicPaths.includes(location.pathname)) {
       navigate('/login');
     }
-  }, [user, navigate]);
+  }, [user, navigate, location.pathname]);
   
   return (
     <div className="px-2 py-2">

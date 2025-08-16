@@ -8,7 +8,8 @@ export const API_CONFIG = {
       PROFILE :  "api/users/profile",
       MAIL : "api/email",
       LOGIN: "api/auth/login",
-      LOGOUT: "api/auth/logout"
+      LOGOUT: "api/auth/logout",
+      EMAIL: "api/email"
     }
 }
 

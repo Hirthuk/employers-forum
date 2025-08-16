@@ -2,11 +2,13 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { assets } from '../assets';
+import { API_CONFIG, axiosApiClient } from '../config/config';
 
 const Requestuser = () => {
   const [form, setForm] = useState({
     name: '',
-    email: '', // Added email field
+    email: '',
+    phone: '',
     sapId: '',
     designation: '',
     project: '',
@@ -15,46 +17,92 @@ const Requestuser = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  // send email / submit request to API
+  const sendRequest = async (payload) => {
+      const response = await axiosApiClient.post(API_CONFIG.EndPoints.EMAIL, payload);
+      return response.data;
+    
+    }
+
+      const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm(prev => ({ ...prev, [name]: value }));
+    setErrors(prev => ({ ...prev, [name]: undefined }));
   };
 
-  const handleSubmit = (e) => {
+  const validatePhone = (phone) => {
+    // basic international phone validation (allows optional +, 7-15 digits)
+    return /^\+?\d{7,15}$/.test(phone);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const newErrors = {};
+
+    // password length
+    if (!form.password || form.password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters";
+    }
+
+    // confirm password match (frontend only)
     if (form.password !== form.confirmPassword) {
-      toast.error("Passwords don't match");
-      return;
+      newErrors.confirmPassword = "Passwords don't match";
     }
 
-    if (form.password.length < 8) {
-      toast.error("Password must be at least 8 characters");
-      return;
-    }
-
-    // Basic email validation
+    // email basic validation
     if (!form.email || !/\S+@\S+\.\S+/.test(form.email)) {
-      toast.error("Please enter a valid email address");
+      newErrors.email = "Please enter a valid email address";
+    }
+
+    // phone validation
+    if (!form.phone || !validatePhone(form.phone)) {
+      newErrors.phone = "Please enter a valid phone number (7-15 digits)";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      // show first error as toast
+      const firstError = newErrors[Object.keys(newErrors)[0]];
+      toast.error(firstError);
       return;
     }
 
-    console.log(form);
-    setForm({
-      name: '',
-      email: '',
-      sapId: '',
-      designation: '',
-      project: '',
-      password: '',
-      confirmPassword: ''
-    });
+    // submit
+    setSubmitting(true);
+    try {
+      // Create payload without confirmPassword
+      const { confirmPassword, ...payload } = form;
+      await sendRequest(payload);
 
-    toast.success("Request submitted successfully");
-    navigate('/');
+      toast.success("Request submitted successfully");
+
+      // reset form & errors
+      setForm({
+        name: '',
+        email: '',
+        phone: '',
+        sapId: '',
+        designation: '',
+        project: '',
+        password: '',
+        confirmPassword: ''
+      });
+      setErrors({});
+      navigate('/');
+    } catch (err) {
+      console.error(err);
+      toast.error(err?.response?.data?.message || 'Failed to submit request');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
+  // ... rest of the component code remains the same ...
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative">
       {/* Background Image with Overlay */}
@@ -116,6 +164,24 @@ const Requestuser = () => {
                 placeholder="Enter your email address"
                 required
               />
+              {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="phone">
+                Phone
+              </label>
+              <input
+                id="phone"
+                name="phone"
+                type="tel"
+                value={form.phone}
+                onChange={handleChange}
+                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all bg-gray-50"
+                placeholder="Enter phone number (e.g. +919876543210)"
+                required
+              />
+              {errors.phone && <p className="text-xs text-red-500 mt-1">{errors.phone}</p>}
             </div>
 
             <div>
@@ -200,6 +266,7 @@ const Requestuser = () => {
                   )}
                 </button>
               </div>
+              {errors.password && <p className="text-xs text-red-500 mt-1">{errors.password}</p>}
             </div>
 
             <div>
@@ -236,6 +303,7 @@ const Requestuser = () => {
                   )}
                 </button>
               </div>
+              {errors.confirmPassword && <p className="text-xs text-red-500 mt-1">{errors.confirmPassword}</p>}
             </div>
 
             <p className="text-center text-xs text-gray-500 mt-2">
@@ -244,15 +312,19 @@ const Requestuser = () => {
 
             <button
               type="submit"
+              disabled={submitting}
               className="w-full bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white py-3 rounded-lg font-medium transition-all duration-300 shadow-md hover:shadow-lg mt-4"
             >
-              Submit Request
+              {submitting ? 'Submitting...' : 'Submit Request'}
             </button>
           </form>
         </div>
       </div>
     </div>
   )
-}
+  };
+
+
+
 
 export default Requestuser;
