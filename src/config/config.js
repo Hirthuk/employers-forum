@@ -10,7 +10,8 @@ export const API_CONFIG = {
       LOGIN: "api/auth/login",
       LOGOUT: "api/auth/logout",
       EMAIL: "api/email",
-      ISADMIN:"api/auth/isAdmin"
+      ISADMIN:"api/auth/isAdmin",
+      GETUSERDETAILS:"api/users"
     }
 }
 
@@ -29,7 +30,7 @@ export const axiosApiClient = axios.create({
 axiosApiClient.interceptors.request.use(
     // Success response
     (config) => {
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem("authToken");
 
         if(token){
             config.headers.Authorization = `Bearer ${token}`

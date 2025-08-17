@@ -77,6 +77,7 @@ const Profile = () => {
           </div>
 
           {/* Admin Page button (responsive) - visible only for admins */}
+          {console.log(isAdmin)}
           {isAdmin ? 
             <div className="w-full sm:w-auto mt-4 sm:mt-0 sm:ml-4 flex justify-center sm:justify-end">
               <button

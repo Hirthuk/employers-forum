@@ -10,9 +10,11 @@ import Profile from './pages/Profile'
 import Requestuser from './pages/Requestuser'
 import HomeLogin from './pages/HomeLogin'
 import HrPage from './pages/HrPage'
+import AdminHomePage from './pages/Admin Pages/AdminHomePage'
+import Unauthorized from './pages/Unauthorized'
 
 const App = () => {
-  const { user } = useContext(UserContext);
+  const { user, isAdmin } = useContext(UserContext);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -34,6 +36,7 @@ const App = () => {
          <Route path='/appreciate' element = {<Appreciate/>}/>
           <Route path='/profile' element = {<Profile/>}/>
           <Route path='/requestuser' element = {<Requestuser/>}/>
+          <Route path = '/admin' element = {isAdmin ? <AdminHomePage/> : <Unauthorized/>}/>
           <Route path='/about' element = {<HrPage/>}/>
       </Routes>
     </div>

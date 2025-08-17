@@ -2,6 +2,7 @@ import React, { createContext, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import AuthService from '../services/AuthService';
 import ProfileService from '../services/ProfileService';
+import AdminService from '../services/AdminService';
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
@@ -14,6 +15,7 @@ export const UserProvider = ({ children }) => {
   const navigator = useNavigate();
   const[token, setToken] = useState(null);
   const [isAdmin, setAdmin] = useState(false);
+  const [userDetails, setUserDetails] = useState(null);
   
   const pages = [
     { id: "happenings", name: "View Happenings" },
@@ -80,6 +82,18 @@ const AdminCheck = async (token) => {
     navigator('/login');
   };
 
+  // Get user details function
+
+  const getUserDetails = async() => {
+    if(isAdmin) {
+      const response = await AdminService.getUserDetails();
+      console.log("usercontext", response);
+      setUserDetails(response);
+      return true;
+    }
+    return false;
+  }
+
   const value = {
     user,
     isAuthenticated,
@@ -95,7 +109,10 @@ const AdminCheck = async (token) => {
     ProfileService,
     userProfile,
     setUserProfile,
-    AdminCheck
+    AdminCheck,
+    isAdmin,
+    getUserDetails,
+    userDetails
   }
 
   return (

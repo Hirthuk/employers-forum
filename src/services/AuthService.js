@@ -66,12 +66,24 @@ class AuthService {
   }
 
   async  isAdmin(){
-    const response = await axiosApiClient.post(API_CONFIG.EndPoints.ISADMIN, {
-      token: this.getToken()
-    })
-    console.log(response.data);
+    const token = this.getToken();
+    try{
+        const isAdmin = await axiosApiClient.post(API_CONFIG.EndPoints.ISADMIN, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
 
-    return response.data;
+        if(isAdmin){
+          return true;
+        }
+        else{
+          return false;
+        }
+    }
+    catch(error){
+      return error.message;
+    }
   }
 
   isUser(){
@@ -87,7 +99,7 @@ class AuthService {
   }
 
   getToken(){
-    return localStorage.getItem("token");
+    return localStorage.getItem("authToken");
   }
 
 }
