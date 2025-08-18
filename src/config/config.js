@@ -11,7 +11,9 @@ export const API_CONFIG = {
       LOGOUT: "api/auth/logout",
       EMAIL: "api/email",
       ISADMIN:"api/auth/isAdmin",
-      GETUSERDETAILS:"api/users"
+      GETUSERDETAILS:"api/users",
+      GETADMINDETAILS:"api/adminusers",
+      GETUSERROLEUSERS:"api/userroleusers"
     }
 }
 

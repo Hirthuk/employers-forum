@@ -20,7 +20,7 @@ const App = () => {
 
   useEffect(() => {
     // allow these public paths without authentication
-    const publicPaths = ['/login', '/requestuser', '/about'];
+    const publicPaths = ['/', '/login', '/requestuser', '/about']; // <-- added '/'
     if (!user && !publicPaths.includes(location.pathname)) {
       navigate('/login');
     }
@@ -30,7 +30,7 @@ const App = () => {
     <div className="px-2 py-2">
       <ToastContainer/>
       <Routes>
-          <Route path='/' element={user ? <Home/> : <HomeLogin/>} />
+          <Route path='/' element={<HomeLogin/>} />
         <Route path='/login' element={<Login/>} />
         <Route path='/happenings' element = {<Happening/>}/>
          <Route path='/appreciate' element = {<Appreciate/>}/>
