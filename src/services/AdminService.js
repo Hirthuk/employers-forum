@@ -27,20 +27,19 @@ class AdminService{
     }
 
     async getAdminDetails() {
-       const token = AuthService.getToken();
+        const token = AuthService.getToken();
         const isAdmin = await AuthService.isAdmin(token);
         if(!isAdmin){
             return "Not Authorized to perform this activity"
         }
         try{
             const response = await axiosApiClient.get(API_CONFIG.EndPoints.GETADMINDETAILS, {
-            headers : {
+            headers: {
                 Authorization: `Bearer ${token}`
             }
-        });
-        return response.data
+        })
+        return response.data;
         }
-
         catch(error){
             return error.message;
         }

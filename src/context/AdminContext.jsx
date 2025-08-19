@@ -1,7 +1,6 @@
 import { Children, createContext, useEffect, useState } from "react";
 import AdminService from "../services/AdminService";
 
-
 // Create the Context
 export const AdminContext = createContext();
 
@@ -9,13 +8,19 @@ export const AdminContext = createContext();
 export const AdminProvider = ({children}) => {
     const [userRoleDetails, setUserRoleDetails] = useState(null);
     const [adminRoleDetails, setAdminRoleDetails] = useState(null);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true); // Initialize as true
 
     useEffect(() => {
-       const fetchData =  async () => {
-          await  fetchUserRoleDetails();
-          await fetchAdminRoleDetails();
-          setLoading(true);
+       const fetchData = async () => {
+          try {
+            setLoading(true);
+            await fetchUserRoleDetails();
+            await fetchAdminRoleDetails();
+          } catch (error) {
+            console.error("Error fetching data:", error);
+          } finally {
+            setLoading(false); // Always set loading to false when done
+          }
         }
         fetchData();
     }, [])
@@ -28,9 +33,9 @@ export const AdminProvider = ({children}) => {
 
     const fetchAdminRoleDetails = async () => {
         const admindetails = await AdminService.getAdminDetails();
-        console.log(adminRoleDetails);
         setAdminRoleDetails(admindetails);
     }
+
     const values = {
         userRoleDetails,
         adminRoleDetails,
