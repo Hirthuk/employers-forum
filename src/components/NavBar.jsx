@@ -12,6 +12,11 @@ const NavBar = () => {
     logout,
   } = useContext(UserContext);
 
+  // ensure "About" exists (don't duplicate if already present)
+  const pagesWithAbout = Array.isArray(pages) && pages.some(p => p.id === 'about' || p.name?.toLowerCase() === 'about')
+    ? pages
+    : [...(pages || []), { id: 'about', name: 'About' }];
+
   const handleLogout = async () => {
     await logout();
     navigator('/login');
@@ -38,7 +43,7 @@ const NavBar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-2">
-            {pages.map((page) => (
+            {pagesWithAbout.map((page) => (
               <button
                 key={page.id}
                 onClick={() => {
@@ -101,7 +106,7 @@ const NavBar = () => {
       {/* Mobile menu */}
       <div className={`${isMobileMenuOpen ? 'block' : 'hidden'} sm:hidden bg-white/95 backdrop-blur-sm`}>
         <div className="pt-2 pb-4 space-y-1 px-4">
-          {pages.map((page) => (
+          {pagesWithAbout.map((page) => (
             <button
               key={page.id}
               onClick={() => {

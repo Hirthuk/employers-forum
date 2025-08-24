@@ -1,50 +1,92 @@
-import { Children, createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import AdminService from "../services/AdminService";
 
-// Create the Context
 export const AdminContext = createContext();
 
-// Create the Context provider
-export const AdminProvider = ({children}) => {
-    const [userRoleDetails, setUserRoleDetails] = useState(null);
-    const [adminRoleDetails, setAdminRoleDetails] = useState(null);
-    const [loading, setLoading] = useState(true); // Initialize as true
+export const AdminProvider = ({ children }) => {
+    const [userRoleDetails, setUserRoleDetails] = useState([]);
+    const [adminRoleDetails, setAdminRoleDetails] = useState([]);
+    const [pendingRequestDetails, setPendingRequestDetails] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-       const fetchData = async () => {
-          try {
-            setLoading(true);
-            await fetchUserRoleDetails();
-            await fetchAdminRoleDetails();
-          } catch (error) {
-            console.error("Error fetching data:", error);
-          } finally {
-            setLoading(false); // Always set loading to false when done
-          }
-        }
-        fetchData();
-    }, [])
+        const initFetch = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+                await Promise.all([
+                    fetchUserRoleDetails(),
+                    fetchAdminRoleDetails()
+                ]);
+            } catch (err) {
+                setError(err.message);
+                console.error("Error initializing admin data:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    // Get UserRole details
+        const token = localStorage.getItem('authToken');
+        if (token) {
+            initFetch();
+        } else {
+            setLoading(false);
+        }
+    }, []);
+
     const fetchUserRoleDetails = async () => {
-        const userDetails = await AdminService.getUserDetails();
-        setUserRoleDetails(userDetails);
-    }
+        try {
+            const userDetails = await AdminService.getUserDetails();
+            setUserRoleDetails(Array.isArray(userDetails) ? userDetails : []);
+        } catch (error) {
+            console.error("Error fetching user role details:", error);
+            setUserRoleDetails([]);
+            throw error;
+        }
+    };
 
     const fetchAdminRoleDetails = async () => {
-        const admindetails = await AdminService.getAdminDetails();
-        setAdminRoleDetails(admindetails);
-    }
+        try {
+            const adminDetails = await AdminService.getAdminDetails();
+            setAdminRoleDetails(Array.isArray(adminDetails) ? adminDetails : []);
+        } catch (error) {
+            console.error("Error fetching admin details:", error);
+            setAdminRoleDetails([]);
+            throw error;
+        }
+    };
+
+    const fetchPendingRequestDetails = async () => {
+        try {
+            const pendingRequests = await AdminService.getPendingRequestDetails();
+            setPendingRequestDetails(Array.isArray(pendingRequests) ? pendingRequests : []);
+            return pendingRequests;
+        } catch (error) {
+            console.error("Error fetching pending requests:", error);
+            setPendingRequestDetails([]);
+            throw error;
+        }
+    };
 
     const values = {
         userRoleDetails,
         adminRoleDetails,
-        loading
-    }
+        pendingRequestDetails,
+        loading,
+        error,
+        fetchUserRoleDetails,
+        fetchAdminRoleDetails,
+        fetchPendingRequestDetails
+    };
+
+    console.log("AdminContext - UserDetails:", userRoleDetails);
+    console.log("AdminContext - AdminDetails:", adminRoleDetails);
+    console.log("AdminContext - PendingRequests:", pendingRequestDetails);
 
     return (
-       <AdminContext.Provider value={values}>
+        <AdminContext.Provider value={values}>
             {children}
         </AdminContext.Provider>
-    )
-}
+    );
+};

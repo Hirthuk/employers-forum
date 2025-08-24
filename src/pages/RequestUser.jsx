@@ -22,8 +22,10 @@ const RequestUser = () => {
   const navigate = useNavigate();
 
   const sendRequest = async (payload) => {
-    const response = await axiosApiClient.post(API_CONFIG.EndPoints.EMAIL, payload);
-      return response.data;
+    
+    const response2 = await axiosApiClient.post(API_CONFIG.EndPoints.POSTSAVEUSERREQUEST,payload);
+    await axiosApiClient.post(API_CONFIG.EndPoints.EMAIL, payload);
+    return response2.data;
   };
 
   const handleChange = (e) => {
@@ -84,11 +86,13 @@ const RequestUser = () => {
       navigate('/');
     } catch (err) {
       console.error(err);
-      if (err.response?.status === 409) {
-        toast.error(err.response.data || 'User with these details already exists');
-      } else {
-        toast.error(err?.response?.data?.message || 'Failed to submit request');
-      }
+      // extract server message reliably and show in toast
+      const serverMessage =
+        err?.response?.data?.message ??
+        err?.response?.data ??
+        err?.message ??
+        'Failed to submit request';
+      toast.error(serverMessage);
     } finally {
       setSubmitting(false);
     }

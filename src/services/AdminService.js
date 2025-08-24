@@ -1,71 +1,64 @@
-import { useContext } from "react";
 import { axiosApiClient, API_CONFIG } from "../config/config";
-import { UserContext } from "../context/UserContext";
 import AuthService from "./AuthService";
-class AdminService{
 
-
-    // Get User Details
-    async getUserDetails()  {
+class AdminService {
+    // Get User Details (non-admin users)
+    async getUserDetails() {
         const token = AuthService.getToken();
-        const isAdmin = await AuthService.isAdmin(token);
-        if(!isAdmin){
-            return "Not Authorized to perform this activity"
-        }
-        try{
-            const response = await axiosApiClient.get(API_CONFIG.EndPoints.GETUSERDETAILS, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
-        return response.data;
-        }
-        catch(error){
-            return error.message;
-        }
-        
-    }
-
-    async getAdminDetails() {
-        const token = AuthService.getToken();
-        const isAdmin = await AuthService.isAdmin(token);
-        if(!isAdmin){
-            return "Not Authorized to perform this activity"
-        }
-        try{
-            const response = await axiosApiClient.get(API_CONFIG.EndPoints.GETADMINDETAILS, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
-        return response.data;
-        }
-        catch(error){
-            return error.message;
-        }
-        
-    }
-
-    // Get user details based on role USER
-    async getUserDetailsRoleuser(){
-        const token = AuthService.getToken;
-        const isAdmin = await AuthService.isAdmin();
-        if(!isAdmin){
-            return "Not Authorized Activity"
+        if (!token) {
+            throw new Error("No authentication token found");
         }
 
-        try{
+        try {
             const response = await axiosApiClient.get(API_CONFIG.EndPoints.GETUSERROLEUSERS, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
-            })
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching user details:", error);
+            throw error;
+        }
+    }
 
-            return response.data
+    // Get Admin Details
+    async getAdminDetails() {
+        const token = AuthService.getToken();
+        if (!token) {
+            throw new Error("No authentication token found");
         }
 
-        catch(error){
-            return error.message;
+        try {
+            const response = await axiosApiClient.get(API_CONFIG.EndPoints.GETADMINDETAILS, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching admin details:", error);
+            throw error;
+        }
+    }
+
+    // Get pending request details
+    async getPendingRequestDetails() {
+        const token = AuthService.getToken();
+        if (!token) {
+            throw new Error("No authentication token found");
+        }
+
+        try {
+            const response = await axiosApiClient.get(API_CONFIG.EndPoints.GETUSERREQUESTDETAILS, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching pending requests:", error);
+            throw error;
         }
     }
 }

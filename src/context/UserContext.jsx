@@ -22,7 +22,7 @@ export const UserProvider = ({ children }) => {
     { id: "happenings", name: "View Happenings" },
     { id: "appreciate", name: "Appreciate" },
     { id: "profile", name: "Profile" },
-    { id: "/", name: "About" }
+    { id: "about", name: "About" }
   ];
 
   // Check authentication status on app load

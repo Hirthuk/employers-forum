@@ -13,7 +13,9 @@ export const API_CONFIG = {
       ISADMIN:"api/auth/isAdmin",
       GETUSERDETAILS:"api/users",
       GETADMINDETAILS:"api/users/adminusers",
-      GETUSERROLEUSERS:"api/users/userroleusers"
+      GETUSERROLEUSERS:"api/users/userroleusers",
+      GETUSERREQUESTDETAILS:"api/requestUser/details",
+      POSTSAVEUSERREQUEST:"api/requestUser"
     }
 }
 
