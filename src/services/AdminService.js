@@ -4,7 +4,7 @@ import AuthService from "./AuthService";
 class AdminService {
     // Get User Details (non-admin users)
     async getUserDetails() {
-        const token = AuthService.getToken();
+        const token =  AuthService.getToken();
         if (!token) {
             throw new Error("No authentication token found");
         }

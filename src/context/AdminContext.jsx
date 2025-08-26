@@ -4,89 +4,87 @@ import AdminService from "../services/AdminService";
 export const AdminContext = createContext();
 
 export const AdminProvider = ({ children }) => {
-    const [userRoleDetails, setUserRoleDetails] = useState([]);
-    const [adminRoleDetails, setAdminRoleDetails] = useState([]);
-    const [pendingRequestDetails, setPendingRequestDetails] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+  const [token] = useState(localStorage.getItem("sapid"));
+  const [userRoleDetails, setUserRoleDetails] = useState([]);
+  const [adminRoleDetails, setAdminRoleDetails] = useState([]);
+  const [pendingRequestDetails, setPendingRequestDetails] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-    useEffect(() => {
-        const initFetch = async () => {
-            try {
-                setLoading(true);
-                setError(null);
-                await Promise.all([
-                    fetchUserRoleDetails(),
-                    fetchAdminRoleDetails()
-                ]);
-            } catch (err) {
-                setError(err.message);
-                console.error("Error initializing admin data:", err);
-            } finally {
-                setLoading(false);
-            }
-        };
+  // fetchers with safe fallback
+  const fetchUserRoleDetails = async () => {
+    try {
+      const userDetails = await AdminService.getUserDetails();
+      setUserRoleDetails(userDetails || []);
+    } catch (err) {
+      console.error("Error fetching user role details:", err);
+      setUserRoleDetails([]);
+      setError(err);
+    }
+  };
 
-        const token = localStorage.getItem('authToken');
-        if (token) {
-            initFetch();
-        } else {
-            setLoading(false);
-        }
-    }, []);
+  const fetchAdminRoleDetails = async () => {
+    try {
+      const adminDetails = await AdminService.getAdminDetails();
+      setAdminRoleDetails(adminDetails || []);
+    } catch (err) {
+      console.error("Error fetching admin details:", err);
+      setAdminRoleDetails([]);
+      setError(err);
+    }
+  };
 
-    const fetchUserRoleDetails = async () => {
-        try {
-            const userDetails = await AdminService.getUserDetails();
-            setUserRoleDetails(Array.isArray(userDetails) ? userDetails : []);
-        } catch (error) {
-            console.error("Error fetching user role details:", error);
-            setUserRoleDetails([]);
-            throw error;
-        }
+  const fetchPendingRequestDetails = async () => {
+    try {
+      const pending = await AdminService.getPendingRequestDetails();
+      setPendingRequestDetails(pending || []);
+    } catch (err) {
+      console.error("Error fetching pending requests:", err);
+      setPendingRequestDetails([]);
+      setError(err);
+    }
+  };
+
+  // ✅ Fetch all data once token is available
+  useEffect(() => {
+    const getAdminDetails = async () => {
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
+      try {
+        await Promise.all([
+          fetchUserRoleDetails(),
+          fetchAdminRoleDetails(),
+          fetchPendingRequestDetails(),
+        ]);
+      } catch (err) {
+        console.error("Error in fetching admin data:", err);
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    const fetchAdminRoleDetails = async () => {
-        try {
-            const adminDetails = await AdminService.getAdminDetails();
-            setAdminRoleDetails(Array.isArray(adminDetails) ? adminDetails : []);
-        } catch (error) {
-            console.error("Error fetching admin details:", error);
-            setAdminRoleDetails([]);
-            throw error;
-        }
-    };
+    getAdminDetails();
+  }, [token]);
 
-    const fetchPendingRequestDetails = async () => {
-        try {
-            const pendingRequests = await AdminService.getPendingRequestDetails();
-            setPendingRequestDetails(Array.isArray(pendingRequests) ? pendingRequests : []);
-            return pendingRequests;
-        } catch (error) {
-            console.error("Error fetching pending requests:", error);
-            setPendingRequestDetails([]);
-            throw error;
-        }
-    };
+  const values = {
+    userRoleDetails,
+    adminRoleDetails,
+    pendingRequestDetails,
+    loading,
+    error,
+    fetchUserRoleDetails,
+    fetchAdminRoleDetails,
+    fetchPendingRequestDetails,
+  };
 
-    const values = {
-        userRoleDetails,
-        adminRoleDetails,
-        pendingRequestDetails,
-        loading,
-        error,
-        fetchUserRoleDetails,
-        fetchAdminRoleDetails,
-        fetchPendingRequestDetails
-    };
-
-    console.log("AdminContext - UserDetails:", userRoleDetails);
-    console.log("AdminContext - AdminDetails:", adminRoleDetails);
-    console.log("AdminContext - PendingRequests:", pendingRequestDetails);
-
-    return (
-        <AdminContext.Provider value={values}>
-            {children}
-        </AdminContext.Provider>
-    );
+  return (
+    <AdminContext.Provider value={values}>
+      {children}
+    </AdminContext.Provider>
+  );
 };

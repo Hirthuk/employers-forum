@@ -5,6 +5,7 @@ export const API_CONFIG = {
     BaseURL : import.meta.env.VITE_API_BASE_URL || "http://localhost:8080",
     EndPoints: {
       USER_DETAILS :  "/api/users",
+      POST_create_users: "api/users",
       PROFILE :  "api/users/profile",
       MAIL : "api/email",
       LOGIN: "api/auth/login",
@@ -15,7 +16,8 @@ export const API_CONFIG = {
       GETADMINDETAILS:"api/users/adminusers",
       GETUSERROLEUSERS:"api/users/userroleusers",
       GETUSERREQUESTDETAILS:"api/requestUser/details",
-      POSTSAVEUSERREQUEST:"api/requestUser"
+      POSTSAVEUSERREQUEST:"api/requestUser",
+      DELETEUSERREQUEST:"api/requestUser/delete"
     }
 }
 
