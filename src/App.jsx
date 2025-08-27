@@ -7,7 +7,7 @@ import { UserContext } from './context/UserContext'
 import Happening from './pages/Happening'
 import Appreciate from './pages/Appreciate'
 import Profile from './pages/Profile'
-import Requestuser from './pages/Requestuser'
+import RequestUser from './pages/RequestUser'
 import HomeLogin from './pages/HomeLogin'
 import HrPage from './pages/HrPage'
 import AdminHomePage from './pages/Admin Pages/AdminHomePage'
@@ -57,7 +57,7 @@ const App = () => {
         <Route path='/happenings' element = {<Happening/>}/>
          <Route path='/appreciate' element = {<Appreciate/>}/>
           <Route path='/profile' element = {<Profile/>}/>
-          <Route path='/requestuser' element = {<Requestuser/>}/>
+          <Route path='/requestuser' element = {<RequestUser/>}/>
           <Route path = '/admin' element = {isAdmin ? <AdminHomePage/> : <Unauthorized/>}/>
           <Route path='/about' element = {<HrPage/>}/>
       </Routes>
