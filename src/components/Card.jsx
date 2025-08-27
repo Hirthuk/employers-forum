@@ -1,13 +1,39 @@
 import React, { useState } from 'react';
+import { assets } from '../assets';
 
-const Card = ({ SapId, Name, message, fromSapId }) => {
-  const [isLiked, setIsLiked] = useState(false);
+const Card = ({ 
+  id,
+  SapId, 
+  Name, 
+  message, 
+  fromSapId, 
+  likes, 
+  creation_date, 
+  liked, 
+  onLike, 
+  isLiking 
+}) => {
   const [isExpanded, setIsExpanded] = useState(false);
   
   // Truncate message if needed
   const maxLength = 150;
   const shouldTruncate = message.length > maxLength && !isExpanded;
   const displayMessage = shouldTruncate ? `${message.substring(0, maxLength)}...` : message;
+
+  // Format date
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInHours = Math.floor((now - date) / (1000 * 60 * 60));
+    
+    if (diffInHours < 1) {
+      return 'Just now';
+    } else if (diffInHours < 24) {
+      return `${diffInHours}h ago`;
+    } else {
+      return date.toLocaleDateString();
+    }
+  };
 
   return (
     <div className='w-full'>
@@ -57,17 +83,20 @@ const Card = ({ SapId, Name, message, fromSapId }) => {
               From: <span className='font-medium text-blue-600'>{fromSapId}</span>
             </div>
             <div className='flex items-center gap-3'>
-              <span className='text-xs text-gray-500'>2h ago</span>
+              <span className='text-xs text-gray-500'>{formatDate(creation_date)}</span>
               <button 
-                onClick={() => setIsLiked(!isLiked)}
-                className={`p-1.5 rounded-full transition-colors ${
-                  isLiked 
+                onClick={() => onLike(id, likes)}
+                disabled={isLiking || liked}
+                className={`p-1.5 rounded-full transition-colors flex items-center gap-1 ${
+                  liked 
                     ? 'text-red-500 bg-red-50' 
                     : 'text-gray-400 hover:text-blue-500 hover:bg-blue-50'
-                }`}
-                aria-label={isLiked ? 'Unlike post' : 'Like post'}
+                } ${isLiking ? 'opacity-50 cursor-not-allowed' : ''}`}
+                aria-label={liked ? 'Unlike post' : 'Like post'}
               >
-                {isLiked ? (
+                {isLiking ? (
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-600 border-t-transparent"></div>
+                ) : liked ? (
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
                   </svg>
@@ -76,6 +105,7 @@ const Card = ({ SapId, Name, message, fromSapId }) => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                   </svg>
                 )}
+                <span className="text-sm">{likes}</span>
               </button>
             </div>
           </div>

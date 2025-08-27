@@ -17,7 +17,10 @@ export const API_CONFIG = {
       GETUSERROLEUSERS:"api/users/userroleusers",
       GETUSERREQUESTDETAILS:"api/requestUser/details",
       POSTSAVEUSERREQUEST:"api/requestUser",
-      DELETEUSERREQUEST:"api/requestUser/delete"
+      DELETEUSERREQUEST:"api/requestUser/delete",
+      GETHAPPENINGS:"api/appreciate",
+      ADDHAPPENINGS:"api/appreciate",
+      PUTLIKEPOST:"api/appreciate/like"
     }
 }
 

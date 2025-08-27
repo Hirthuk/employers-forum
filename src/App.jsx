@@ -12,6 +12,21 @@ import HomeLogin from './pages/HomeLogin'
 import HrPage from './pages/HrPage'
 import AdminHomePage from './pages/Admin Pages/AdminHomePage'
 import Unauthorized from './pages/Unauthorized'
+import AuthService from './services/AuthService'
+
+const isTokenValid = (token) => {
+  if (!token || typeof token !== 'string') return false;
+  try {
+    const parts = token.split('.');
+    if (parts.length !== 3) return true;
+    const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
+    if (!payload.exp) return true;
+    const now = Math.floor(Date.now() / 1000);
+    return payload.exp > now;
+  } catch (e) {
+    return true;
+  }
+};
 
 const App = () => {
   const { user, isAdmin } = useContext(UserContext);
@@ -19,13 +34,20 @@ const App = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // allow these public paths without authentication
-    const publicPaths = ['/', '/login', '/requestuser', '/about']; // <-- added '/'
-    if (!user && !publicPaths.includes(location.pathname)) {
-      navigate('/login');
+    const publicPaths = ['/', '/login', '/requestuser', '/about'];
+    const path = location.pathname;
+    if (publicPaths.includes(path)) return;
+    if (user) return;
+
+    // use AuthService.getToken() as source of truth
+    const token = AuthService.getToken();
+    if (token && isTokenValid(token)) {
+      return;
     }
+
+    navigate('/login');
   }, [user, navigate, location.pathname]);
-  
+
   return (
     <div className="px-2 py-2">
       <ToastContainer/>

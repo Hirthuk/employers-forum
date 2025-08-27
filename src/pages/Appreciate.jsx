@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import NavBar from '../components/NavBar';
 import { toast } from 'react-toastify';
+import { API_CONFIG, axiosApiClient } from '../config/config';
+import AuthService from '../services/AuthService'; // Import your authentication service
 
 const Appreciate = () => {
   const [sapid, setSapId] = useState('');
@@ -11,14 +13,59 @@ const Appreciate = () => {
     message: false
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validate inputs
+    if (!sapid.trim()) {
+      toast.error('Please enter a valid SAP ID', {
+        position: "top-center",
+        autoClose: 3000,
+      });
+      return;
+    }
+    
+    if (!message.trim()) {
+      toast.error('Please enter an appreciation message', {
+        position: "top-center",
+        autoClose: 3000,
+      });
+      return;
+    }
+    
     setLoading(true);
-    // Simulate API call
-    setTimeout(() => {
+    
+    try {
+      // Get current user's SAP ID
+      const fromSapId = AuthService.getSapId();
+      
+      if (!fromSapId) {
+        toast.error('Unable to identify your account. Please log in again.', {
+          position: "top-center",
+          autoClose: 3000,
+        });
+        setLoading(false);
+        return;
+      }
+      
+      // Prepare the request data
+      const requestData = {
+        from_sapid: fromSapId,
+        to_sapid: sapid.trim(),
+        appreciation_message: message.trim()
+      };
+      
+      // Make API call
+      const response = await axiosApiClient.post(
+        API_CONFIG.EndPoints.ADDHAPPENINGS, 
+        requestData
+      );
+      
+      // Reset form
       setSapId('');
       setMessage('');
-      setLoading(false);
+      
+      // Show success message
       toast.success('🎉 Appreciation sent successfully!', {
         position: "top-center",
         autoClose: 3000,
@@ -29,7 +76,39 @@ const Appreciate = () => {
         progress: undefined,
         theme: "light",
       });
-    }, 1200);
+      
+    } catch (error) {
+      console.error('Error sending appreciation:', error);
+      
+      let errorMessage = 'Failed to send appreciation. Please try again.';
+      
+      if (error.response) {
+        // Server responded with error status
+        if (error.response.status === 400) {
+          errorMessage = 'Invalid SAP ID or message format.';
+        } else if (error.response.status === 404) {
+          errorMessage = 'Recipient SAP ID not found.';
+        } else if (error.response.status === 500) {
+          errorMessage = 'Server error. Please try again later.';
+        }
+      } else if (error.request) {
+        // Request was made but no response received
+        errorMessage = 'Network error. Please check your connection.';
+      }
+      
+      toast.error(errorMessage, {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleFocus = (field) => {
@@ -79,6 +158,8 @@ const Appreciate = () => {
                     className="block w-full px-4 py-3 bg-white/80 border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
                     placeholder="e.g. 52006992"
                     required
+                    pattern="[0-9]+"
+                    title="Please enter a valid SAP ID (numbers only)"
                   />
                   <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                     <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -97,13 +178,18 @@ const Appreciate = () => {
                   <textarea
                     id="message"
                     value={message}
-                    onChange={e => setMessage(e.target.value)}
+                    onChange={e => {
+                      if (e.target.value.length <= 500) {
+                        setMessage(e.target.value);
+                      }
+                    }}
                     onFocus={() => handleFocus('message')}
                     onBlur={() => handleBlur('message')}
                     className="block w-full px-4 py-3 bg-white/80 border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition resize-none"
                     placeholder="I really appreciate how you..."
                     rows={5}
                     required
+                    maxLength={500}
                   />
                   <div className="absolute bottom-3 right-3 text-xs text-gray-400">
                     {message.length}/500

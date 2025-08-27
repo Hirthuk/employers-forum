@@ -110,7 +110,7 @@ const Profile = () => {
               <div>
                 <h3 className="text-white/90 text-sm font-medium">Points Earned</h3>
                 <p className="text-3xl sm:text-4xl font-bold text-white mt-1">
-                  {userProfile.points?.toLocaleString() ?? 0} pts
+                  {userProfile.total_appreciation*10} pts
                 </p>
               </div>
               <div className="mt-4 sm:mt-0">
