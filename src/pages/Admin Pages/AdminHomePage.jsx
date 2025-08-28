@@ -98,15 +98,16 @@ const AdminHomePage = () => {
       );
 
       // remove from pending
-      await axiosApiClient.post(API_CONFIG.EndPoints.DELETEUSERREQUEST, {
-        sapid: request.sapid ?? request.sapId,
-      },
-      {
-          headers: {
-            Authorization: `Bearer ${AuthService.getToken}`
-          }
+     await axiosApiClient.post(
+    API_CONFIG.EndPoints.DELETEUSERREQUEST, 
+    request.sapid ?? request.sapId, // Send raw Long value
+    {
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${AuthService.getToken()}`
         }
-    );
+    }
+);
 
       toast.success(res?.data?.message || 'User approved successfully');
 
