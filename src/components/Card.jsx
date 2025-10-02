@@ -11,17 +11,19 @@ const Card = ({
   creation_date, 
   liked, 
   onLike, 
-  isLiking 
+  isLiking,
+  appreciation_header // new prop
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   
   // Truncate message if needed
   const maxLength = 150;
-  const shouldTruncate = message.length > maxLength && !isExpanded;
-  const displayMessage = shouldTruncate ? `${message.substring(0, maxLength)}...` : message;
+  const shouldTruncate = (message || '').length > maxLength && !isExpanded;
+  const displayMessage = shouldTruncate ? `${(message || '').substring(0, maxLength)}...` : (message || '');
 
   // Format date
   const formatDate = (dateString) => {
+    if (!dateString) return '';
     const date = new Date(dateString);
     const now = new Date();
     const diffInHours = Math.floor((now - date) / (1000 * 60 * 60));
@@ -42,11 +44,18 @@ const Card = ({
         <div className='bg-gradient-to-r from-blue-500 to-cyan-500 p-4'>
           <div className='flex items-center gap-3'>
             <div className='h-10 w-10 rounded-full bg-white/20 flex items-center justify-center text-white font-bold'>
-              {Name.charAt(0)}
+              {(Name || '?').charAt(0)}
             </div>
-            <div>
-              <h2 className='text-lg font-semibold text-white'>{Name}</h2>
-              <p className='text-sm text-white/90'>SAP ID: {SapId}</p>
+            <div className='flex-1'>
+              <h2 className='text-lg font-semibold text-white'>{Name || 'Unknown'}</h2>
+              <p className='text-sm text-white/90'>SAP ID: {SapId || '-'}</p>
+
+              {/* appreciation header badge */}
+              {appreciation_header ? (
+                <span className='inline-block mt-2 px-2 py-0.5 text-xs font-medium bg-white/20 text-white rounded-full'>
+                  {appreciation_header}
+                </span>
+              ) : null}
             </div>
           </div>
         </div>

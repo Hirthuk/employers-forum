@@ -3,15 +3,19 @@ import NavBar from '../components/NavBar';
 import Card from '../components/Card';
 import { assets } from '../assets';
 import { API_CONFIG, axiosApiClient } from '../config/config';
+import AuthService from '../services/AuthService';
 
 const Happening = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeFilter, setActiveFilter] = useState('all');
+  const [activeFilter, setActiveFilter] = useState('all'); // 'all' | 'recent' | 'me'
   const [showSearch, setShowSearch] = useState(true);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [likingPostId, setLikingPostId] = useState(null);
+
+  // current logged in user's SAP ID (string)
+  const mySapId = (AuthService.getSapId && AuthService.getSapId())?.toString() || null;
 
   // Fetch data from API
   useEffect(() => {
@@ -19,19 +23,20 @@ const Happening = () => {
       try {
         setLoading(true);
         const response = await axiosApiClient.get(API_CONFIG.EndPoints.GETHAPPENINGS);
-        
+
         // Transform API data to match expected format
-        const transformedPosts = response.data.map(post => ({
+        const transformedPosts = (response?.data || []).map(post => ({
           id: post.id,
-          SapId: post.to_sapid.toString(),
-          Name: post.getterName.toString(),
-          message: post.appreciation_message,
-          fromSapId: post.from_sapid.toString(),
-          likes: post.likes,
-          creation_date: post.creation_date,
-          liked: false // You can implement proper liked state if you have user authentication
+          SapId: (post.to_sapid ?? post.toSapId ?? post.toSapid ?? '').toString(),
+          Name: (post.getterName ?? post.name ?? '').toString(),
+          message: post.appreciation_message ?? post.message ?? '',
+          fromSapId: (post.from_sapid ?? post.fromSapId ?? '').toString(),
+          likes: Number(post.likes ?? 0),
+          creation_date: post.creation_date ?? post.createdAt ?? post.creationDate,
+          liked: false, // placeholder
+          appreciation_header: post.appreciation_header ?? post.header ?? post.title ?? ''
         }));
-        
+
         setPosts(transformedPosts);
         setError(null);
       } catch (err) {
@@ -49,37 +54,34 @@ const Happening = () => {
   const handleLikeClick = async (postId, currentLikes) => {
     try {
       setLikingPostId(postId);
-      
+
       // Optimistically update the UI
-      setPosts(prevPosts => 
-        prevPosts.map(post => 
-          post.id === postId 
-            ? { ...post, likes: currentLikes + 1, liked: true } 
+      setPosts(prevPosts =>
+        prevPosts.map(post =>
+          post.id === postId
+            ? { ...post, likes: currentLikes + 1, liked: true }
             : post
         )
       );
-      
+
       // Make API call to update likes
       await axiosApiClient.post(
-  `/api/appreciate/like/${postId}`,
-  null,
-  { headers: { "Content-Type": "application/json" } }
-);
-
-
-      
+        `/api/appreciate/like/${postId}`,
+        null,
+        { headers: { "Content-Type": "application/json" } }
+      );
     } catch (err) {
       console.error('Error liking post:', err);
-      
+
       // Revert optimistic update on error
-      setPosts(prevPosts => 
-        prevPosts.map(post => 
-          post.id === postId 
-            ? { ...post, likes: currentLikes, liked: false } 
+      setPosts(prevPosts =>
+        prevPosts.map(post =>
+          post.id === postId
+            ? { ...post, likes: currentLikes, liked: false }
             : post
         )
       );
-      
+
       alert('Failed to like the post. Please try again.');
     } finally {
       setLikingPostId(null);
@@ -89,24 +91,29 @@ const Happening = () => {
   // Filter posts based on search and filter criteria
   const filteredPosts = React.useMemo(() => {
     let result = [...posts];
-    
+
     // Apply search filter
     if (searchTerm.trim() !== '') {
       const term = searchTerm.toLowerCase();
       result = result.filter(post =>
-        post.Name.toLowerCase().includes(term) ||
-        post.SapId.toString().includes(term) ||
-        post.message.toLowerCase().includes(term)
+        (post.Name || '').toLowerCase().includes(term) ||
+        (post.SapId || '').toString().includes(term) ||
+        (post.message || '').toLowerCase().includes(term)
       );
     }
-    
+
+    // Apply 'me' filter (received by current user)
+    if (activeFilter === 'me' && mySapId) {
+      result = result.filter(post => (post.SapId || '').toString() === mySapId.toString());
+    }
+
     // Apply sorting filter
     if (activeFilter === 'recent') {
       result = result.reverse();
     }
-    
+
     return result;
-  }, [posts, searchTerm, activeFilter]);
+  }, [posts, searchTerm, activeFilter, mySapId]);
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
@@ -215,6 +222,19 @@ const Happening = () => {
               >
                 All Posts
               </button>
+
+              {/* New 'Me' filter - shows posts received by current user */}
+              <button 
+                onClick={() => handleFilter('me')}
+                className={`px-4 py-2 rounded-xl transition-all ${
+                  activeFilter === 'me' 
+                    ? 'bg-blue-600 text-white shadow-md' 
+                    : 'bg-white/80 border border-blue-200 hover:bg-blue-50 text-blue-600'
+                }`}
+                title={mySapId ? `Show posts received by ${mySapId}` : 'Show posts received by me'}
+              >
+                Me
+              </button>
             </div>
           </div>
         </div>
@@ -247,6 +267,7 @@ const Happening = () => {
               likes={post.likes}
               creation_date={post.creation_date}
               liked={post.liked}
+              appreciation_header={post.appreciation_header}
               onLike={() => handleLikeClick(post.id, post.likes)}
               isLiking={likingPostId === post.id}
             />
