@@ -125,7 +125,7 @@ const HomeLogin = () => {
             >
               <span className="hidden lg:block">Welcome to</span>
               <span className={`bg-clip-text text-transparent bg-gradient-to-r ${features[currentFeature].color} inline-block mt-0 lg:mt-2 transition-all duration-700`}>
-                Ripple
+                Rewards Sphere
               </span>
             </Motion.h1>
 
@@ -286,7 +286,7 @@ const HomeLogin = () => {
 
                 <NavLink to="/about">
                   <button className="w-full text-center text-sm text-slate-400 hover:text-cyan-300 transition-colors pt-1">
-                    Learn more about Ripple →
+                    Learn more about Rewards Sphere →
                   </button>
                 </NavLink>
               </div>

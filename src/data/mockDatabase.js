@@ -1,8 +1,8 @@
-// Fully client-side mock "database" for Ripple.
+// Fully client-side mock "database" for Rewards Sphere.
 // No backend, no network calls — everything lives in memory and localStorage
 // so the demo data persists across page reloads.
 
-const STORAGE_KEY = "ripple_mock_db_v1";
+const STORAGE_KEY = "rewardsphere_mock_db_v1";
 
 const seedUsers = [
   {
@@ -10,7 +10,7 @@ const seedUsers = [
     sapid: "10001234",
     password: "pass1234",
     name: "Ava Patel",
-    email: "ava.patel@rippleteam.io",
+    email: "ava.patel@rewardsphere.io",
     phone_number: "+919812340001",
     designation: "Frontend Engineer",
     project_name: "Atlas Redesign",
@@ -23,7 +23,7 @@ const seedUsers = [
     sapid: "10005678",
     password: "pass1234",
     name: "Liam Chen",
-    email: "liam.chen@rippleteam.io",
+    email: "liam.chen@rewardsphere.io",
     phone_number: "+919812340002",
     designation: "Backend Engineer",
     project_name: "Atlas Redesign",
@@ -36,7 +36,7 @@ const seedUsers = [
     sapid: "10009012",
     password: "pass1234",
     name: "Sofia Martinez",
-    email: "sofia.martinez@rippleteam.io",
+    email: "sofia.martinez@rewardsphere.io",
     phone_number: "+919812340003",
     designation: "Engineering Manager",
     project_name: "Platform Core",
@@ -49,7 +49,7 @@ const seedUsers = [
     sapid: "10003456",
     password: "pass1234",
     name: "Noah Williams",
-    email: "noah.williams@rippleteam.io",
+    email: "noah.williams@rewardsphere.io",
     phone_number: "+919812340004",
     designation: "QA Engineer",
     project_name: "Nimbus Cloud",
@@ -62,7 +62,7 @@ const seedUsers = [
     sapid: "10007890",
     password: "pass1234",
     name: "Emma Johnson",
-    email: "emma.johnson@rippleteam.io",
+    email: "emma.johnson@rewardsphere.io",
     phone_number: "+919812340005",
     designation: "HR Business Partner",
     project_name: "People Ops",
@@ -75,7 +75,7 @@ const seedUsers = [
     sapid: "10002345",
     password: "pass1234",
     name: "Oliver Brown",
-    email: "oliver.brown@rippleteam.io",
+    email: "oliver.brown@rewardsphere.io",
     phone_number: "+919812340006",
     designation: "DevOps Engineer",
     project_name: "Nimbus Cloud",
@@ -88,7 +88,7 @@ const seedUsers = [
     sapid: "10006789",
     password: "pass1234",
     name: "Isabella Garcia",
-    email: "isabella.garcia@rippleteam.io",
+    email: "isabella.garcia@rewardsphere.io",
     phone_number: "+919812340007",
     designation: "Product Designer",
     project_name: "Atlas Redesign",
@@ -101,7 +101,7 @@ const seedUsers = [
     sapid: "10004567",
     password: "pass1234",
     name: "Ethan Davis",
-    email: "ethan.davis@rippleteam.io",
+    email: "ethan.davis@rewardsphere.io",
     phone_number: "+919812340008",
     designation: "Data Analyst",
     project_name: "Beacon Analytics",
@@ -116,7 +116,7 @@ const seedPendingRequests = [
     id: 101,
     sapid: "10011223",
     name: "Maya Singh",
-    email: "maya.singh@rippleteam.io",
+    email: "maya.singh@rewardsphere.io",
     phone_number: "+919812340101",
     designation: "Junior Developer",
     project_name: "Atlas Redesign",
@@ -127,7 +127,7 @@ const seedPendingRequests = [
     id: 102,
     sapid: "10022334",
     name: "Daniel Kim",
-    email: "daniel.kim@rippleteam.io",
+    email: "daniel.kim@rewardsphere.io",
     phone_number: "+919812340102",
     designation: "Site Reliability Engineer",
     project_name: "Nimbus Cloud",
@@ -138,7 +138,7 @@ const seedPendingRequests = [
     id: 103,
     sapid: "10033445",
     name: "Priya Nair",
-    email: "priya.nair@rippleteam.io",
+    email: "priya.nair@rewardsphere.io",
     phone_number: "+919812340103",
     designation: "Business Analyst",
     project_name: "Beacon Analytics",
@@ -149,7 +149,7 @@ const seedPendingRequests = [
     id: 104,
     sapid: "10044556",
     name: "Marcus Lee",
-    email: "marcus.lee@rippleteam.io",
+    email: "marcus.lee@rewardsphere.io",
     phone_number: "+919812340104",
     designation: "UX Researcher",
     project_name: "Platform Core",

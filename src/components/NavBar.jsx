@@ -56,7 +56,7 @@ const NavBar = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
               </svg>
             </div>
-            <span className="text-lg font-bold gradient-text tracking-tight">Ripple</span>
+            <span className="text-lg font-bold gradient-text tracking-tight">Rewards Sphere</span>
           </button>
 
           {/* Desktop Navigation */}

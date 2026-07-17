@@ -31,11 +31,11 @@ const HrPage = () => {
           <div className="space-y-6">
             <span className="chip bg-white/5 border-white/10 text-slate-300">About the platform</span>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight">
-              Ripple — <span className="gradient-text">Appreciate. Connect. Grow.</span>
+              Rewards Sphere — <span className="gradient-text">Appreciate. Connect. Grow.</span>
             </h1>
 
             <p className="text-slate-400 text-sm sm:text-base max-w-prose">
-              Ripple is an internal platform for employees to appreciate peers, share wins,
+              Rewards Sphere is an internal platform for employees to appreciate peers, share wins,
               and coordinate across projects. Built with clear role-based controls and lightweight
               workflows so teams can celebrate contributions and keep an auditable record of recognition.
             </p>
@@ -76,7 +76,7 @@ const HrPage = () => {
                 </div>
               </div>
 
-              <h3 className="text-lg font-semibold text-white text-center relative">Ripple — Celebrate wins</h3>
+              <h3 className="text-lg font-semibold text-white text-center relative">Rewards Sphere — Celebrate wins</h3>
               <p className="text-sm text-slate-400 mt-2 text-center relative">
                 Fast appreciation flows, clear project context, and lightweight admin tools.
               </p>
