@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { motion as Motion, AnimatePresence } from "framer-motion";
 import { NavLink } from "react-router-dom";
-import { assets } from "../assets";
+import {
+  ChatBubbleLeftRightIcon,
+  ShieldCheckIcon,
+  ChartBarIcon,
+  HandRaisedIcon,
+} from "@heroicons/react/24/outline";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -52,29 +57,25 @@ const HomeLogin = () => {
 
   const features = [
     {
-      image: assets.teamcollaboration,
-      alt: "Team collaborating on project",
+      Icon: ChatBubbleLeftRightIcon,
       title: "Real-time Feedback",
       description: "Instant team feedback sharing",
       color: "from-cyan-400 to-blue-500"
     },
     {
-      image: assets.secureenvironment,
-      alt: "Secure data protection illustration",
+      Icon: ShieldCheckIcon,
       title: "Secure Environment",
       description: "Encrypted communication",
       color: "from-violet-400 to-fuchsia-500"
     },
     {
-      image: assets.dashboard,
-      alt: "Data analytics dashboard",
+      Icon: ChartBarIcon,
       title: "Actionable Insights",
       description: "Data-driven improvements",
       color: "from-emerald-400 to-teal-500"
     },
     {
-      image: assets.highfive,
-      alt: "Team members giving high fives",
+      Icon: HandRaisedIcon,
       title: "Peer Recognition",
       description: "Celebrate team wins",
       color: "from-amber-400 to-orange-500"
@@ -124,7 +125,7 @@ const HomeLogin = () => {
             >
               <span className="hidden lg:block">Welcome to</span>
               <span className={`bg-clip-text text-transparent bg-gradient-to-r ${features[currentFeature].color} inline-block mt-0 lg:mt-2 transition-all duration-700`}>
-                Insight Hub
+                Ripple
               </span>
             </Motion.h1>
 
@@ -144,29 +145,47 @@ const HomeLogin = () => {
               transition={{ delay: 0.4 }}
             >
               <AnimatePresence mode="wait">
-                <Motion.div
-                  key={currentFeature}
-                  initial={{ opacity: 0, x: -30 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 30 }}
-                  transition={{ duration: 0.6, ease: "easeInOut" }}
-                  className="absolute inset-0"
-                >
-                  <img
-                    src={features[currentFeature].image}
-                    alt={features[currentFeature].alt}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-4 lg:p-6 text-left">
-                    <h3 className="text-xl lg:text-2xl font-bold text-white">
-                      {features[currentFeature].title}
-                    </h3>
-                    <p className="text-slate-300 text-sm lg:text-base">
-                      {features[currentFeature].description}
-                    </p>
-                  </div>
-                </Motion.div>
+                {(() => {
+                  const ActiveIcon = features[currentFeature].Icon;
+                  return (
+                    <Motion.div
+                      key={currentFeature}
+                      initial={{ opacity: 0, x: -30 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: 30 }}
+                      transition={{ duration: 0.6, ease: "easeInOut" }}
+                      className="absolute inset-0"
+                    >
+                      <div className={`absolute inset-0 bg-gradient-to-br ${features[currentFeature].color}`} />
+                      <div
+                        className="absolute inset-0 opacity-25"
+                        style={{
+                          backgroundImage: "radial-gradient(rgba(255,255,255,0.5) 1px, transparent 1px)",
+                          backgroundSize: "20px 20px",
+                        }}
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <Motion.div
+                          className="w-20 h-20 lg:w-24 lg:h-24 rounded-full bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center shadow-[0_0_40px_-8px_rgba(255,255,255,0.5)]"
+                          initial={{ scale: 0.7, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
+                        >
+                          <ActiveIcon className="w-10 h-10 lg:w-12 lg:h-12 text-white" />
+                        </Motion.div>
+                      </div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                      <div className="absolute bottom-0 left-0 right-0 p-4 lg:p-6 text-left">
+                        <h3 className="text-xl lg:text-2xl font-bold text-white">
+                          {features[currentFeature].title}
+                        </h3>
+                        <p className="text-slate-100/90 text-sm lg:text-base">
+                          {features[currentFeature].description}
+                        </p>
+                      </div>
+                    </Motion.div>
+                  );
+                })()}
               </AnimatePresence>
             </Motion.div>
 
@@ -185,8 +204,8 @@ const HomeLogin = () => {
                   onClick={() => setCurrentFeature(i)}
                   whileHover={{ y: -3 }}
                 >
-                  <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-lg overflow-hidden border-2 border-white/10 hover:border-white/30 transition-all">
-                    <img src={feature.image} alt={feature.alt} className="w-full h-full object-cover" />
+                  <div className={`w-12 h-12 lg:w-14 lg:h-14 rounded-lg overflow-hidden border-2 border-white/10 hover:border-white/30 transition-all bg-gradient-to-br ${feature.color} flex items-center justify-center`}>
+                    <feature.Icon className="w-6 h-6 lg:w-7 lg:h-7 text-white" />
                   </div>
                   {currentFeature === i && (
                     <Motion.div
@@ -267,7 +286,7 @@ const HomeLogin = () => {
 
                 <NavLink to="/about">
                   <button className="w-full text-center text-sm text-slate-400 hover:text-cyan-300 transition-colors pt-1">
-                    Learn more about Insight Hub →
+                    Learn more about Ripple →
                   </button>
                 </NavLink>
               </div>

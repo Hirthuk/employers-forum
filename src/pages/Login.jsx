@@ -64,7 +64,7 @@ const Login = () => {
 
         <div className="glass-panel rounded-2xl overflow-hidden">
           <div className="p-6 text-center border-b border-white/10">
-            <h1 className="text-2xl font-bold gradient-text">Insight Hub</h1>
+            <h1 className="text-2xl font-bold gradient-text">Ripple</h1>
             <p className="text-slate-400 mt-1 text-sm">Collaborate. Grow. Succeed Together.</p>
           </div>
 
