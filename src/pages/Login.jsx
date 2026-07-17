@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react'
 import { UserContext } from '../context/UserContext'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
-import { assets } from '../assets'
+import { DEMO_CREDENTIALS } from '../data/mockDatabase'
 
 const Login = () => {
   const [sapId, setSapId] = useState('')
@@ -12,30 +12,27 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate();
   const { login } = useContext(UserContext);
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
-    
+
     if (!sapId || !password) {
       setError('Please enter both SAP ID and password.');
       return
     }
 
     setIsLoading(true)
-    
+
     try {
-      console.log('Submitting login form...');
       const response = await login(sapId, password);
-      if(response.token){
-        toast.success("Logged in successfully");
+      if (response.token) {
+        toast.success('Logged in successfully');
         navigate('/happenings');
-      }
-      else{
-        toast.error("Login failed. Please check your credentials.");
+      } else {
+        toast.error('Login failed. Please check your credentials.');
       }
     } catch (error) {
-      console.error('Login error:', error.message);
       setError(error.message || 'Login failed. Please check your credentials.');
       toast.error(error.message || 'Login failed');
     } finally {
@@ -43,88 +40,75 @@ const Login = () => {
     }
   }
 
-  return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative">
-      {/* Background Image with Overlay */}
-      <div className="absolute inset-0 z-0">
-        <img
-          src={assets.loginbg}
-          alt="Background"
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-black/30" />
-      </div>
+  const fillDemo = (kind) => {
+    const creds = DEMO_CREDENTIALS[kind];
+    setSapId(creds.sapid);
+    setPassword(creds.password);
+    setError('');
+  };
 
-      {/* Login Card */}
+  return (
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Ambient glow background */}
+      <div className="absolute -top-32 -left-32 w-96 h-96 bg-violet-600/25 rounded-full blur-3xl animate-float-slow" />
+      <div className="absolute -bottom-32 -right-24 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl animate-float-slower" />
+
       <div className="w-full max-w-md mx-auto z-10">
-        {/* Header with logo only on larger screens */}
-        <div className="hidden md:block text-center mb-6">
-          <div className="bg-white p-3 rounded-full shadow-lg inline-flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        <div className="text-center mb-6">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500 via-fuchsia-500 to-cyan-400 shadow-[0_0_30px_-6px_rgba(217,70,239,0.7)]">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
           </div>
         </div>
 
-        {/* Form with teal color scheme */}
-        <div className="bg-white/95 rounded-xl shadow-xl overflow-hidden border border-white/30">
-          <div className="bg-gradient-to-r from-teal-500 to-cyan-600 p-6 text-center">
-            <h1 className="text-2xl font-bold text-white">Insight Hub</h1>
-            <p className="text-white/90 mt-1">Collaborate. Grow. Succeed Together.</p>
+        <div className="glass-panel rounded-2xl overflow-hidden">
+          <div className="p-6 text-center border-b border-white/10">
+            <h1 className="text-2xl font-bold gradient-text">Insight Hub</h1>
+            <p className="text-slate-400 mt-1 text-sm">Collaborate. Grow. Succeed Together.</p>
           </div>
-          
+
           <form onSubmit={handleSubmit} className="p-6 sm:p-8">
             <div className="mb-6 text-center">
-              <h2 className="text-xl font-semibold text-gray-800">Welcome Back</h2>
-              <p className="text-gray-600 text-sm mt-1">Sign in to access your dashboard</p>
+              <h2 className="text-xl font-semibold text-white">Welcome back</h2>
+              <p className="text-slate-400 text-sm mt-1">Sign in to access your dashboard</p>
             </div>
-            
+
             <div className="space-y-4">
               <div>
-                <label htmlFor="sapId" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="sapId" className="block text-sm font-medium text-slate-300 mb-1">
                   SAP ID
                 </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                  </div>
-                  <input
-                    id="sapId"
-                    type="number"
-                    value={sapId}
-                    onChange={e => setSapId(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all bg-gray-50"
-                    placeholder="Enter your SAP ID"
-                    autoComplete="username"
-                  />
-                </div>
+                <input
+                  id="sapId"
+                  type="text"
+                  inputMode="numeric"
+                  value={sapId}
+                  onChange={e => setSapId(e.target.value)}
+                  className="glass-input"
+                  placeholder="Enter your SAP ID"
+                  autoComplete="username"
+                />
               </div>
-              
+
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="password" className="block text-sm font-medium text-slate-300 mb-1">
                   Password
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                    </svg>
-                  </div>
                   <input
                     id="password"
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={e => setPassword(e.target.value)}
-                    className="w-full pl-10 pr-10 py-2.5 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all bg-gray-50"
+                    className="glass-input pr-10"
                     placeholder="Enter your password"
                     autoComplete="current-password"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-teal-600 transition-colors p-1"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-500 hover:text-cyan-300 transition-colors p-1"
                     tabIndex={-1}
                   >
                     {showPassword ? (
@@ -140,24 +124,20 @@ const Login = () => {
                   </button>
                 </div>
               </div>
-              
+
               {error && (
-                <div className="text-red-500 text-sm text-center py-2 px-3 bg-red-50 rounded-md flex items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="text-rose-300 text-sm text-center py-2 px-3 bg-rose-500/10 border border-rose-500/20 rounded-md flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   {error}
                 </div>
               )}
-              
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 disabled:from-teal-400 disabled:to-cyan-400 text-white py-3 rounded-lg font-medium transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center disabled:cursor-not-allowed"
-              >
+
+              <button type="submit" disabled={isLoading} className="btn-primary w-full py-3">
                 {isLoading ? (
                   <>
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <svg className="animate-spin -ml-1 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
@@ -166,23 +146,48 @@ const Login = () => {
                 ) : (
                   <>
                     <span>Sign In</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
                     </svg>
                   </>
                 )}
               </button>
-              
+
               <div className="flex justify-between items-center pt-2">
-                <a href="#" className="text-teal-600 hover:text-teal-700 text-sm font-medium hover:underline">
+                <a href="#" className="text-cyan-400 hover:text-cyan-300 text-sm font-medium hover:underline">
                   Forgot password?
                 </a>
-                <a href="/requestuser" className="text-teal-600 hover:text-teal-700 text-sm font-medium hover:underline">
+                <a href="/requestuser" className="text-cyan-400 hover:text-cyan-300 text-sm font-medium hover:underline">
                   Request Access
                 </a>
               </div>
             </div>
           </form>
+
+          {/* Demo credentials — this is a fully front-end demo with no real backend */}
+          <div className="px-6 sm:px-8 pb-6">
+            <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+              <p className="text-xs font-semibold text-slate-300 mb-2">Demo credentials (no backend — all data is mocked)</p>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <button
+                  type="button"
+                  onClick={() => fillDemo('user')}
+                  className="flex-1 text-left px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
+                >
+                  <span className="block text-xs text-slate-400">Employee</span>
+                  <span className="block text-sm text-slate-200 font-mono">10001234 / pass1234</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => fillDemo('admin')}
+                  className="flex-1 text-left px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
+                >
+                  <span className="block text-xs text-slate-400">Admin</span>
+                  <span className="block text-sm text-slate-200 font-mono">10009012 / pass1234</span>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

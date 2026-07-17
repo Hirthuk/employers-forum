@@ -1,110 +1,113 @@
 import React, { useState } from 'react';
-import { assets } from '../assets';
 
-const Card = ({ 
+const AVATAR_GRADIENTS = [
+  'from-violet-500 to-fuchsia-500',
+  'from-cyan-500 to-blue-500',
+  'from-emerald-500 to-teal-500',
+  'from-amber-500 to-orange-500',
+  'from-rose-500 to-pink-500',
+];
+
+const gradientFor = (seed) => {
+  const code = String(seed || '').split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
+  return AVATAR_GRADIENTS[code % AVATAR_GRADIENTS.length];
+};
+
+const Card = ({
   id,
-  SapId, 
-  Name, 
-  message, 
-  fromSapId, 
-  likes, 
-  creation_date, 
-  liked, 
-  onLike, 
+  SapId,
+  Name,
+  message,
+  fromSapId,
+  likes,
+  creation_date,
+  liked,
+  onLike,
   isLiking,
-  appreciation_header // new prop
+  appreciation_header,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  
-  // Truncate message if needed
+
   const maxLength = 150;
   const shouldTruncate = (message || '').length > maxLength && !isExpanded;
   const displayMessage = shouldTruncate ? `${(message || '').substring(0, maxLength)}...` : (message || '');
 
-  // Format date
   const formatDate = (dateString) => {
     if (!dateString) return '';
     const date = new Date(dateString);
     const now = new Date();
     const diffInHours = Math.floor((now - date) / (1000 * 60 * 60));
-    
-    if (diffInHours < 1) {
-      return 'Just now';
-    } else if (diffInHours < 24) {
-      return `${diffInHours}h ago`;
-    } else {
-      return date.toLocaleDateString();
-    }
+
+    if (diffInHours < 1) return 'Just now';
+    if (diffInHours < 24) return `${diffInHours}h ago`;
+    if (diffInHours < 24 * 7) return `${Math.floor(diffInHours / 24)}d ago`;
+    return date.toLocaleDateString();
   };
 
   return (
-    <div className='w-full'>
-      <div className='flex flex-col h-full rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-200 border border-blue-100'>
-        {/* Header with bright background */}
-        <div className='bg-gradient-to-r from-blue-500 to-cyan-500 p-4'>
-          <div className='flex items-center gap-3'>
-            <div className='h-10 w-10 rounded-full bg-white/20 flex items-center justify-center text-white font-bold'>
+    <div className="group h-full">
+      <div className="flex flex-col h-full rounded-2xl overflow-hidden glass-panel hover:border-white/20 hover:-translate-y-1 transition-all duration-300">
+        {/* Header */}
+        <div className="p-4 border-b border-white/10">
+          <div className="flex items-center gap-3">
+            <div className={`h-10 w-10 shrink-0 rounded-full bg-gradient-to-br ${gradientFor(Name)} flex items-center justify-center text-white font-bold shadow-lg`}>
               {(Name || '?').charAt(0)}
             </div>
-            <div className='flex-1'>
-              <h2 className='text-lg font-semibold text-white'>{Name || 'Unknown'}</h2>
-              <p className='text-sm text-white/90'>SAP ID: {SapId || '-'}</p>
-
-              {/* appreciation header badge */}
-              {appreciation_header ? (
-                <span className='inline-block mt-2 px-2 py-0.5 text-xs font-medium bg-white/20 text-white rounded-full'>
-                  {appreciation_header}
-                </span>
-              ) : null}
+            <div className="flex-1 min-w-0">
+              <h2 className="text-base font-semibold text-white truncate">{Name || 'Unknown'}</h2>
+              <p className="text-xs text-slate-400">SAP ID: {SapId || '-'}</p>
             </div>
           </div>
+          {appreciation_header ? (
+            <span className="chip mt-3 bg-fuchsia-500/10 text-fuchsia-300 border-fuchsia-500/20">
+              {appreciation_header}
+            </span>
+          ) : null}
         </div>
 
         {/* Message content */}
-        <div className='p-5 bg-white flex-grow'>
-          <div className='mb-4'>
-            <p className='text-gray-700 whitespace-pre-line'>
-              {displayMessage}
-              {shouldTruncate && (
-                <button 
-                  onClick={() => setIsExpanded(true)}
-                  className='ml-1 text-blue-600 hover:underline focus:outline-none'
-                >
-                  Read more
-                </button>
-              )}
-              {isExpanded && (
-                <button 
-                  onClick={() => setIsExpanded(false)}
-                  className='ml-1 text-blue-600 hover:underline focus:outline-none'
-                >
-                  Show less
-                </button>
-              )}
-            </p>
-          </div>
+        <div className="p-5 flex-grow">
+          <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-line">
+            {displayMessage}
+            {shouldTruncate && (
+              <button
+                onClick={() => setIsExpanded(true)}
+                className="ml-1 text-cyan-400 hover:text-cyan-300 hover:underline focus:outline-none"
+              >
+                Read more
+              </button>
+            )}
+            {isExpanded && (message || '').length > maxLength && (
+              <button
+                onClick={() => setIsExpanded(false)}
+                className="ml-1 text-cyan-400 hover:text-cyan-300 hover:underline focus:outline-none"
+              >
+                Show less
+              </button>
+            )}
+          </p>
         </div>
 
         {/* Footer with actions */}
-        <div className='px-5 pb-4 bg-gray-50'>
-          <div className='flex justify-between items-center'>
-            <div className='text-sm text-gray-600'>
-              From: <span className='font-medium text-blue-600'>{fromSapId}</span>
+        <div className="px-5 py-3 bg-white/[0.02] border-t border-white/10">
+          <div className="flex justify-between items-center">
+            <div className="text-xs text-slate-400">
+              From <span className="font-medium text-violet-300">{fromSapId}</span>
             </div>
-            <div className='flex items-center gap-3'>
-              <span className='text-xs text-gray-500'>{formatDate(creation_date)}</span>
-              <button 
+            <div className="flex items-center gap-3">
+              <span className="text-xs text-slate-500">{formatDate(creation_date)}</span>
+              <button
                 onClick={() => onLike(id, likes)}
                 disabled={isLiking || liked}
                 className={`p-1.5 rounded-full transition-colors flex items-center gap-1 ${
-                  liked 
-                    ? 'text-red-500 bg-red-50' 
-                    : 'text-gray-400 hover:text-blue-500 hover:bg-blue-50'
+                  liked
+                    ? 'text-rose-400 bg-rose-500/10'
+                    : 'text-slate-400 hover:text-rose-400 hover:bg-rose-500/10'
                 } ${isLiking ? 'opacity-50 cursor-not-allowed' : ''}`}
                 aria-label={liked ? 'Unlike post' : 'Like post'}
               >
                 {isLiking ? (
-                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-600 border-t-transparent"></div>
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-cyan-400 border-t-transparent"></div>
                 ) : liked ? (
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />

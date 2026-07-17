@@ -113,7 +113,8 @@ const AdminCheck = async (token) => {
     AdminCheck,
     isAdmin,
     getUserDetails,
-    userDetails
+    userDetails,
+    token
   }
 
   return (

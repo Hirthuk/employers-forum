@@ -1,66 +1,35 @@
-import { axiosApiClient, API_CONFIG } from "../config/config";
-import AuthService from "./AuthService";
+import { mockDB } from "../data/mockDatabase";
+
+const delay = (ms = 300) => new Promise((resolve) => setTimeout(resolve, ms));
 
 class AdminService {
-    // Get User Details (non-admin users)
-    async getUserDetails() {
-        const token =  AuthService.getToken();
-        if (!token) {
-            throw new Error("No authentication token found");
-        }
+  async getUserDetails() {
+    await delay();
+    return mockDB.getUsers();
+  }
 
-        try {
-            const response = await axiosApiClient.get(API_CONFIG.EndPoints.GETUSERROLEUSERS, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-            return response.data;
-        } catch (error) {
-            console.error("Error fetching user details:", error);
-            throw error;
-        }
-    }
+  async getAdminDetails() {
+    await delay();
+    return mockDB.getAdmins();
+  }
 
-    // Get Admin Details
-    async getAdminDetails() {
-        const token = AuthService.getToken();
-        if (!token) {
-            throw new Error("No authentication token found");
-        }
+  async getPendingRequestDetails() {
+    await delay();
+    return mockDB.getPendingRequests();
+  }
 
-        try {
-            const response = await axiosApiClient.get(API_CONFIG.EndPoints.GETADMINDETAILS, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-            return response.data;
-        } catch (error) {
-            console.error("Error fetching admin details:", error);
-            throw error;
-        }
-    }
+  async approveRequest(sapid) {
+    await delay(400);
+    const user = mockDB.approveRequest(sapid);
+    if (!user) throw new Error("Request not found");
+    return user;
+  }
 
-    // Get pending request details
-    async getPendingRequestDetails() {
-        const token = AuthService.getToken();
-        if (!token) {
-            throw new Error("No authentication token found");
-        }
-
-        try {
-            const response = await axiosApiClient.get(API_CONFIG.EndPoints.GETUSERREQUESTDETAILS, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-            return response.data;
-        } catch (error) {
-            console.error("Error fetching pending requests:", error);
-            throw error;
-        }
-    }
+  async rejectRequest(sapid) {
+    await delay(250);
+    mockDB.rejectRequest(sapid);
+    return true;
+  }
 }
 
 export default new AdminService();

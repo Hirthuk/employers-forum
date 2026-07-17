@@ -71,6 +71,21 @@ export const AdminProvider = ({ children }) => {
     getAdminDetails();
   }, [token]);
 
+  const approveRequest = async (request) => {
+    const created = await AdminService.approveRequest(request.sapid);
+    await Promise.all([
+      fetchPendingRequestDetails(),
+      fetchUserRoleDetails(),
+      fetchAdminRoleDetails(),
+    ]);
+    return created;
+  };
+
+  const rejectRequest = async (request) => {
+    await AdminService.rejectRequest(request.sapid);
+    await fetchPendingRequestDetails();
+  };
+
   const values = {
     userRoleDetails,
     adminRoleDetails,
@@ -80,6 +95,8 @@ export const AdminProvider = ({ children }) => {
     fetchUserRoleDetails,
     fetchAdminRoleDetails,
     fetchPendingRequestDetails,
+    approveRequest,
+    rejectRequest,
   };
 
   return (

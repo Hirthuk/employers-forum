@@ -2,7 +2,6 @@ import React, { useContext, useEffect  } from 'react'
 import Login from './pages/Login'
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
-import Home from './pages/Home'
 import { UserContext } from './context/UserContext'
 import Happening from './pages/Happening'
 import Appreciate from './pages/Appreciate'
@@ -23,7 +22,7 @@ const isTokenValid = (token) => {
     if (!payload.exp) return true;
     const now = Math.floor(Date.now() / 1000);
     return payload.exp > now;
-  } catch (e) {
+  } catch {
     return true;
   }
 };
@@ -49,8 +48,8 @@ const App = () => {
   }, [user, navigate, location.pathname]);
 
   return (
-    <div className="px-2 py-2">
-      <ToastContainer/>
+    <div className="min-h-screen">
+      <ToastContainer theme="dark" position="top-center" />
       <Routes>
         <Route path='/' element={<HomeLogin/>} />
         <Route path='/login' element={<Login/>} />

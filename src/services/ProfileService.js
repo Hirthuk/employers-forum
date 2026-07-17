@@ -1,20 +1,15 @@
-import { axiosApiClient, API_CONFIG } from "../config/config";
+import { mockDB } from "../data/mockDatabase";
+import AuthService from "./AuthService";
+
+const delay = (ms = 250) => new Promise((resolve) => setTimeout(resolve, ms));
 
 class ProfileService {
-
-    async getProfileDetails(){
-        try{
-        const profileDetails = axiosApiClient.get(API_CONFIG.EndPoints.PROFILE, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('authToken')}`
-            }
-        });
-        return profileDetails;
-        }
-        catch(error){
-            return error;
-        }
-    }
+  async getProfileDetails() {
+    await delay();
+    const sapid = AuthService.getSapId();
+    const profile = mockDB.findBySapId(sapid);
+    return { data: profile };
+  }
 }
 
 export default new ProfileService();
