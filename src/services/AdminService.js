@@ -1,33 +1,24 @@
-import { mockDB } from "../data/mockDatabase";
-
-const delay = (ms = 300) => new Promise((resolve) => setTimeout(resolve, ms));
+import apiClient from "./apiClient";
 
 class AdminService {
   async getUserDetails() {
-    await delay();
-    return mockDB.getUsers();
+    return apiClient.get("/api/users/userroleusers", { auth: true });
   }
 
   async getAdminDetails() {
-    await delay();
-    return mockDB.getAdmins();
+    return apiClient.get("/api/users/adminusers", { auth: true });
   }
 
   async getPendingRequestDetails() {
-    await delay();
-    return mockDB.getPendingRequests();
+    return apiClient.get("/api/requestUser/details", { auth: true });
   }
 
   async approveRequest(sapid) {
-    await delay(400);
-    const user = mockDB.approveRequest(sapid);
-    if (!user) throw new Error("Request not found");
-    return user;
+    return apiClient.post(`/api/requestUser/approve/${Number(sapid)}`, undefined, { auth: true });
   }
 
   async rejectRequest(sapid) {
-    await delay(250);
-    mockDB.rejectRequest(sapid);
+    await apiClient.post("/api/requestUser/delete", Number(sapid), { auth: true });
     return true;
   }
 }

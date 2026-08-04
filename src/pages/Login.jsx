@@ -2,7 +2,6 @@ import React, { useContext, useState } from 'react'
 import { UserContext } from '../context/UserContext'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
-import { DEMO_CREDENTIALS } from '../data/mockDatabase'
 
 const Login = () => {
   const [sapId, setSapId] = useState('')
@@ -39,13 +38,6 @@ const Login = () => {
       setIsLoading(false)
     }
   }
-
-  const fillDemo = (kind) => {
-    const creds = DEMO_CREDENTIALS[kind];
-    setSapId(creds.sapid);
-    setPassword(creds.password);
-    setError('');
-  };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
@@ -163,31 +155,6 @@ const Login = () => {
               </div>
             </div>
           </form>
-
-          {/* Demo credentials — this is a fully front-end demo with no real backend */}
-          <div className="px-6 sm:px-8 pb-6">
-            <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-              <p className="text-xs font-semibold text-slate-300 mb-2">Demo credentials (no backend — all data is mocked)</p>
-              <div className="flex flex-col sm:flex-row gap-2">
-                <button
-                  type="button"
-                  onClick={() => fillDemo('user')}
-                  className="flex-1 text-left px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
-                >
-                  <span className="block text-xs text-slate-400">Employee</span>
-                  <span className="block text-sm text-slate-200 font-mono">10001234 / pass1234</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => fillDemo('admin')}
-                  className="flex-1 text-left px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
-                >
-                  <span className="block text-xs text-slate-400">Admin</span>
-                  <span className="block text-sm text-slate-200 font-mono">10009012 / pass1234</span>
-                </button>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>

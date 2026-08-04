@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { mockDB } from '../data/mockDatabase';
-
-const delay = (ms = 500) => new Promise(resolve => setTimeout(resolve, ms));
+import apiClient from '../services/apiClient';
 
 const RequestUser = () => {
   const [form, setForm] = useState({
@@ -28,7 +26,7 @@ const RequestUser = () => {
     setErrors(prev => ({ ...prev, [name]: undefined }));
   };
 
-  const validatePhone = (phone) => /^\+?\d{7,15}$/.test(phone);
+  const validatePhone = (phone) => /^\d{10}$/.test(phone);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,12 +43,10 @@ const RequestUser = () => {
       newErrors.email = 'Please enter a valid email address';
     }
     if (!form.phone_number || !validatePhone(form.phone_number)) {
-      newErrors.phone_number = 'Please enter a valid phone number (7-15 digits)';
+      newErrors.phone_number = 'Please enter a valid 10-digit phone number';
     }
-    if (!form.sapid.trim()) {
-      newErrors.sapid = 'Please enter your SAP ID';
-    } else if (mockDB.findBySapId(form.sapid.trim())) {
-      newErrors.sapid = 'This SAP ID is already registered';
+    if (!form.sapid.trim() || !/^\d+$/.test(form.sapid.trim())) {
+      newErrors.sapid = 'Please enter a valid numeric SAP ID';
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -62,9 +58,28 @@ const RequestUser = () => {
 
     setSubmitting(true);
     try {
-      const { confirmPassword: _confirmPassword, ...payload } = form;
-      await delay();
-      mockDB.addPendingRequest(payload);
+      await apiClient.post('/api/requestUser', {
+        name: form.name,
+        email: form.email,
+        phone_number: Number(form.phone_number),
+        sapid: Number(form.sapid.trim()),
+        designation: form.designation,
+        project_name: form.project_name,
+        password: form.password,
+      });
+
+      // Best-effort notification email — signup succeeding shouldn't depend on mail delivery.
+      try {
+        await apiClient.post('/api/email', {
+          name: form.name,
+          email: form.email,
+          sapid: Number(form.sapid.trim()),
+          phoneNumber: Number(form.phone_number),
+          project_name: form.project_name,
+        });
+      } catch {
+        // ignore — the request itself already succeeded
+      }
 
       toast.success('Request submitted successfully — an admin will review it shortly');
       setForm({
@@ -117,7 +132,7 @@ const RequestUser = () => {
             <div>
               <label className="block text-sm font-medium text-slate-300 mb-1" htmlFor="phone_number">Phone Number</label>
               <input id="phone_number" name="phone_number" type="tel" value={form.phone_number} onChange={handleChange}
-                className="glass-input" placeholder="Enter phone number (e.g. +919876543210)" required />
+                className="glass-input" placeholder="Enter 10-digit phone number (e.g. 9876543210)" required />
               {errors.phone_number && <p className="text-xs text-rose-400 mt-1">{errors.phone_number}</p>}
             </div>
 

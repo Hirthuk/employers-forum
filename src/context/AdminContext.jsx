@@ -1,10 +1,11 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import AdminService from "../services/AdminService";
+import { UserContext } from "./UserContext";
 
 export const AdminContext = createContext();
 
 export const AdminProvider = ({ children }) => {
-  const [token] = useState(localStorage.getItem("sapid"));
+  const { isAdmin } = useContext(UserContext);
   const [userRoleDetails, setUserRoleDetails] = useState([]);
   const [adminRoleDetails, setAdminRoleDetails] = useState([]);
   const [pendingRequestDetails, setPendingRequestDetails] = useState([]);
@@ -45,10 +46,11 @@ export const AdminProvider = ({ children }) => {
     }
   };
 
-  // ✅ Fetch all data once token is available
+  // Fetch all data whenever auth state becomes true (covers login happening
+  // after this provider already mounted, not just the initial page load).
   useEffect(() => {
     const getAdminDetails = async () => {
-      if (!token) {
+      if (!isAdmin) {
         setLoading(false);
         return;
       }
@@ -69,7 +71,7 @@ export const AdminProvider = ({ children }) => {
     };
 
     getAdminDetails();
-  }, [token]);
+  }, [isAdmin]);
 
   const approveRequest = async (request) => {
     const created = await AdminService.approveRequest(request.sapid);

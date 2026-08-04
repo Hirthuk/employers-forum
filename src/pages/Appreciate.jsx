@@ -3,7 +3,6 @@ import NavBar from '../components/NavBar';
 import { toast } from 'react-toastify';
 import PostsService from '../services/PostsService';
 import AuthService from '../services/AuthService';
-import { mockDB } from '../data/mockDatabase';
 
 const REASONS = [
   'Good work',
@@ -40,7 +39,7 @@ const Appreciate = () => {
   useEffect(() => {
     const mySap = AuthService.getSapId();
     if (mySap) {
-      setSentCount(PostsService.countSentThisMonth(mySap));
+      PostsService.countSentThisMonth(mySap).then(setSentCount);
     }
   }, []);
 
@@ -73,19 +72,12 @@ const Appreciate = () => {
       return;
     }
 
-    const recipient = mockDB.findBySapId(sapid.trim());
-    if (!recipient) {
-      toast.error('Recipient SAP ID not found.', { position: 'top-center', autoClose: 3000 });
-      return;
-    }
-
     setLoading(true);
 
     try {
       await PostsService.addPost({
         from_sapid: fromSapId,
         to_sapid: sapid.trim(),
-        getterName: recipient.name,
         appreciation_header: reason,
         appreciation_message: message.trim(),
       });
@@ -93,15 +85,15 @@ const Appreciate = () => {
       setSapId('');
       setMessage('');
       setReason('');
-      setSentCount(PostsService.countSentThisMonth(fromSapId));
+      setSentCount(await PostsService.countSentThisMonth(fromSapId));
 
       toast.success('🎉 Appreciation sent successfully!', {
         position: 'top-center',
         autoClose: 3000,
         theme: 'dark',
       });
-    } catch {
-      toast.error('Failed to send appreciation. Please try again.', {
+    } catch (err) {
+      toast.error(err?.message || 'Failed to send appreciation. Please try again.', {
         position: 'top-center',
         autoClose: 3000,
         theme: 'dark',

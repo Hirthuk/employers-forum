@@ -42,8 +42,9 @@ export const UserProvider = ({ children }) => {
           sapId: AuthService.getSapId(),
           role: AuthService.getUserRole()
         });
+        AdminCheck();
       }
-      
+
       setLoading(false);
       setToken(AuthService.getToken());
     };
@@ -61,6 +62,7 @@ export const UserProvider = ({ children }) => {
       token: response.token
     });
     setIsAuthenticated(true);
+    await AdminCheck();
     return response;
   };
   // Check whether the user is admin with token

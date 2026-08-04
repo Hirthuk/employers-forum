@@ -1,13 +1,8 @@
-import { mockDB } from "../data/mockDatabase";
-import AuthService from "./AuthService";
-
-const delay = (ms = 250) => new Promise((resolve) => setTimeout(resolve, ms));
+import apiClient from "./apiClient";
 
 class ProfileService {
   async getProfileDetails() {
-    await delay();
-    const sapid = AuthService.getSapId();
-    const profile = mockDB.findBySapId(sapid);
+    const profile = await apiClient.get("/api/users/profile", { auth: true });
     return { data: profile };
   }
 }
