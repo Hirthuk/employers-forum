@@ -9,13 +9,81 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/outline';
 
+const DUMMY_POSTS = [
+  {
+    id: 'dummy-1',
+    SapId: '1000002',
+    Name: 'Asha Rao',
+    message: 'Asha tracked down a nasty race condition in the payments service that had been haunting us for weeks. Huge win for the team.',
+    fromSapId: '1000001',
+    likes: 12,
+    creation_date: new Date().toISOString(),
+    liked: false,
+    appreciation_header: 'Outstanding Debugging',
+  },
+  {
+    id: 'dummy-2',
+    SapId: '1000003',
+    Name: 'Vikram Shah',
+    message: 'Vikram spent hours pairing with new hires this sprint and it really showed in their ramp-up speed. Thank you!',
+    fromSapId: '1000002',
+    likes: 8,
+    creation_date: new Date().toISOString(),
+    liked: false,
+    appreciation_header: 'Great Mentorship',
+  },
+  {
+    id: 'dummy-3',
+    SapId: '1000004',
+    Name: 'Priya Menon',
+    message: 'Priya caught three critical edge cases before release that would have caused major issues in production.',
+    fromSapId: '1000003',
+    likes: 15,
+    creation_date: new Date().toISOString(),
+    liked: false,
+    appreciation_header: 'Rock Solid QA',
+  },
+  {
+    id: 'dummy-4',
+    SapId: '1000001',
+    Name: 'Admin User',
+    message: 'Thanks for steering the release through a tricky week and keeping the whole team calm and focused.',
+    fromSapId: '1000004',
+    likes: 6,
+    creation_date: new Date().toISOString(),
+    liked: false,
+    appreciation_header: 'Excellent Leadership',
+  },
+  {
+    id: 'dummy-5',
+    SapId: '1000002',
+    Name: 'Asha Rao',
+    message: 'The refactor of the reporting module was a joy to review — clear, well-tested, and well documented.',
+    fromSapId: '1000004',
+    likes: 4,
+    creation_date: new Date().toISOString(),
+    liked: false,
+    appreciation_header: 'Clean Code Champion',
+  },
+  {
+    id: 'dummy-6',
+    SapId: '1000003',
+    Name: 'Vikram Shah',
+    message: 'Proposed and prototyped the new caching strategy that cut our API latency in half.',
+    fromSapId: '1000002',
+    likes: 9,
+    creation_date: new Date().toISOString(),
+    liked: false,
+    appreciation_header: 'Innovation Award',
+  },
+];
+
 const Happening = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilter, setActiveFilter] = useState('all'); // 'all' | 'recent' | 'me'
   const [showSearch, setShowSearch] = useState(true);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [likingPostId, setLikingPostId] = useState(null);
 
   const mySapId = (AuthService.getSapId && AuthService.getSapId())?.toString() || null;
@@ -38,11 +106,10 @@ const Happening = () => {
           appreciation_header: post.appreciation_header ?? ''
         }));
 
-        setPosts(transformedPosts);
-        setError(null);
+        setPosts(transformedPosts.length > 0 ? transformedPosts : DUMMY_POSTS);
       } catch (err) {
-        console.error('Error fetching happenings:', err);
-        setError('Failed to load posts. Please try again later.');
+        console.error('Error fetching happenings, showing dummy posts:', err);
+        setPosts(DUMMY_POSTS);
       } finally {
         setLoading(false);
       }
@@ -52,6 +119,8 @@ const Happening = () => {
   }, []);
 
   const handleLikeClick = async (postId, currentLikes) => {
+    const isDummyPost = typeof postId === 'string' && postId.startsWith('dummy-');
+
     try {
       setLikingPostId(postId);
 
@@ -61,7 +130,9 @@ const Happening = () => {
         )
       );
 
-      await PostsService.likePost(postId);
+      if (!isDummyPost) {
+        await PostsService.likePost(postId);
+      }
     } catch (err) {
       console.error('Error liking post:', err);
       setPosts(prevPosts =>
@@ -114,23 +185,6 @@ const Happening = () => {
           <div className="text-center">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-fuchsia-400 mb-4"></div>
             <p className="text-slate-400">Loading posts...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className='min-h-screen'>
-        <NavBar />
-        <div className='max-w-7xl mx-auto px-4 sm:px-6 py-8 flex justify-center items-center h-64'>
-          <div className="text-center glass-panel p-8 rounded-2xl max-w-md">
-            <h3 className='text-xl font-medium text-white mb-2'>Something went wrong</h3>
-            <p className='text-slate-400 mb-6'>{error}</p>
-            <button onClick={() => window.location.reload()} className='btn-primary px-6 py-2'>
-              Try Again
-            </button>
           </div>
         </div>
       </div>
