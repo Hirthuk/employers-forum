@@ -106,7 +106,7 @@ const Happening = () => {
           appreciation_header: post.appreciation_header ?? ''
         }));
 
-        setPosts(transformedPosts.length > 0 ? transformedPosts : DUMMY_POSTS);
+        setPosts([...transformedPosts, ...DUMMY_POSTS]);
       } catch (err) {
         console.error('Error fetching happenings, showing dummy posts:', err);
         setPosts(DUMMY_POSTS);
